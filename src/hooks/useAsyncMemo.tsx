@@ -8,7 +8,7 @@ export function useAsyncMemo<T>(
 ): T {
   const [output, setOutput] = useState<T>(init)
 
-  const _callback = useMemo(callback, [...dependencies, callback])
+  const _callback = useMemo(callback, [dependencies])
 
   useEffect(() => {
     let isNotCancelled = true
