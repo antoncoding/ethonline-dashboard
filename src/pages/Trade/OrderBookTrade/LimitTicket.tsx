@@ -177,19 +177,21 @@ export default function LimitTicket({
     const order = await createOrder(
       inputToken.id,
       outputToken.id,
-      inputToken.id,
+      // inputToken.id,
       makerAssetAmount,
       takerAssetAmount,
-      makerFee,
+      // makerFee,
       expiry,
     )
+
+    console.log(`final order`, order)
 
     if (order) await broadcastOrder(order as any)
   }, [
     finalDeadlineUnit,
     createOrder,
     deadline,
-    makerFee,
+    // makerFee,
     inputToken.decimals,
     inputToken.id,
     inputTokenAmount,

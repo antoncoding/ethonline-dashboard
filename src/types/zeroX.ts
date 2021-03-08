@@ -6,24 +6,30 @@ export type OrderWithMetaData = {
   }
 }
 
-export type SignedOrder = {
-  chainId: number
-  exchangeAddress: string
-  makerAddress: string
-  takerAddress: string
-  feeRecipientAddress: string
-  senderAddress: string
-  makerAssetAmount: string
-  takerAssetAmount: string
-  makerFee: string
-  takerFee: string
-  expirationTimeSeconds: string
+export type SignedOrder = UnsignedOrder & {
+  signature: {
+    r: string
+    s: string
+    v: number
+    signatureType: number
+  }
+}
+
+export type UnsignedOrder = {
+  makerToken: string
+  takerToken: string
+  makerAmount: string
+  takerAmount: string
+  maker: string
+  taker: string
+  pool: string
+  expiry: string
   salt: string
-  makerAssetData: string
-  takerAssetData: string
-  makerFeeAssetData: string
-  takerFeeAssetData: string
-  signature: string
+  chainId: number
+  verifyingContract: string
+  takerTokenFeeAmount: string
+  sender: string
+  feeRecipient: string
 }
 
 export type OTokenOrderBook = {

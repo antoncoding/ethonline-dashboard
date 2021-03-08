@@ -1,5 +1,4 @@
 import React, { useMemo, useCallback, useState, useEffect } from 'react'
-import { assetDataUtils } from '@0x/order-utils'
 import { DataView, Timer, Button, LoadingRing, CircleGraph } from '@aragon/ui'
 import { SubgraphOToken, OrderWithMetaData } from '../../../types'
 import { useOrderbook } from '../../../contexts/orderbook'
@@ -36,32 +35,29 @@ export default function UserOrders({ selectedOToken }: OrderbookProps) {
     const thisBook = selectedOToken ? orderbooks.find(book => book.id === selectedOToken.id) : undefined
     if (!thisBook) setEntries([])
     else {
-      const _entries = thisBook.bids
-        .concat(thisBook.asks)
-        .filter((o: OrderWithMetaData) => o.order.makerAddress === user)
+      const _entries = thisBook.bids.concat(thisBook.asks).filter((o: OrderWithMetaData) => o.order.maker === user)
       setEntries(_entries)
     }
   }, [selectedOToken, orderbooks, user])
 
   const renderRow = useCallback(
     (order: OrderWithMetaData) => {
-      const usdcAssetData = assetDataUtils.encodeERC20AssetData(usdc.id)
       const filled =
-        1 - new BigNumber(order.metaData.remainingFillableTakerAssetAmount).div(order.order.takerAssetAmount).toNumber()
-      if (order.order.makerAssetData === usdcAssetData) {
+        1 - new BigNumber(order.metaData.remainingFillableTakerAssetAmount).div(order.order.takerAmount).toNumber()
+      if (order.order.makerToken === usdc.id) {
         // bid
         return [
           green(getBidPrice(order.order, 6, 8).toFixed(4)),
           toTokenAmount(order.metaData.remainingFillableTakerAssetAmount, 8).toFixed(2),
           <CircleGraph value={filled} size={30} strokeWidth={3} />,
-          <Timer format="ms" showIcon end={new Date(Number(order.order.expirationTimeSeconds) * 1000)} />,
+          <Timer format="ms" showIcon end={new Date(Number(order.order.expiry) * 1000)} />,
         ]
       } else {
         return [
           red(getAskPrice(order.order, 8, 6).toFixed(4)),
           toTokenAmount(getRemainingAmounts(order).remainingMakerAssetAmount, 8).toFixed(2),
           <CircleGraph value={filled} size={30} strokeWidth={3} />,
-          <Timer format="ms" showIcon end={new Date(Number(order.order.expirationTimeSeconds) * 1000)} />,
+          <Timer format="ms" showIcon end={new Date(Number(order.order.expiry) * 1000)} />,
         ]
       }
     },

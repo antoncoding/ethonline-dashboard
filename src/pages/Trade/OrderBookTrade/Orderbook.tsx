@@ -1,5 +1,4 @@
 import React, { useEffect, useCallback, useState, useMemo } from 'react'
-import { assetDataUtils } from '@0x/order-utils'
 
 import { DataView, Timer } from '@aragon/ui'
 import { SubgraphOToken, OrderWithMetaData } from '../../../types'
@@ -41,7 +40,7 @@ export default function Orderbook({ selectedOToken, action }: OrderbookProps) {
 
   const renderRow = useCallback(
     (order: OrderWithMetaData) => {
-      const isBid = assetDataUtils.encodeERC20AssetData(usdc.id) === order.order.makerAssetData
+      const isBid = usdc.id === order.order.makerToken
 
       const remainingAmounts = isBid
         ? toTokenAmount(order.metaData.remainingFillableTakerAssetAmount, 8).toFixed(2)
@@ -51,11 +50,7 @@ export default function Orderbook({ selectedOToken, action }: OrderbookProps) {
         ? green(getBidPrice(order.order, 6, 8).toFixed(4))
         : red(getAskPrice(order.order, 8, 6).toFixed(4))
 
-      return [
-        price,
-        remainingAmounts,
-        <Timer format="ms" showIcon end={new Date(Number(order.order.expirationTimeSeconds) * 1000)} />,
-      ]
+      return [price, remainingAmounts, <Timer format="ms" showIcon end={new Date(Number(order.order.expiry) * 1000)} />]
     },
     [usdc],
   )

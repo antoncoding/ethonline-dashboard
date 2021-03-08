@@ -250,7 +250,7 @@ export default function MarketTicket({
   }, [action, oTokenAllowance, usdcAllowance, inputTokenAmount, inputToken])
 
   const closestExpry = useMemo(() => {
-    return ordersToFill.length > 0 ? Math.min(...ordersToFill.map(o => Number(o.expirationTimeSeconds))) : 0
+    return ordersToFill.length > 0 ? Math.min(...ordersToFill.map(o => Number(o.expiry))) : 0
   }, [ordersToFill])
 
   return (

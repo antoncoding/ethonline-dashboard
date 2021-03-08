@@ -94,32 +94,17 @@ export default function MakeOrderDetail({ selectedOToken, usdcBalance, oTokenBal
     Spenders.ZeroXERC20Proxy,
   )
 
-  // 1/1000 as fee.
-  const makerFee = useMemo(() => {
-    const inputPercentage = fromTokenAmount(inputTokenAmount, paymentToken.decimals)
-      .div(new BigNumber(1000))
-      .integerValue()
-    const outputPercentage = fromTokenAmount(outputTokenAmount, paymentToken.decimals)
-      .div(new BigNumber(1000))
-      .integerValue()
-    const minFee = fromTokenAmount(new BigNumber(1), paymentToken.decimals)
-    return action === TradeAction.Buy ? BigNumber.max(inputPercentage, minFee) : BigNumber.max(outputPercentage, minFee)
-  }, [action, inputTokenAmount, outputTokenAmount, paymentToken])
-
   const approveUSDCAndFee = useCallback(async () => {
     setIsApprovingUSDC(true)
     try {
       if (action === TradeAction.Buy) {
         const rawInputAmount = fromTokenAmount(inputTokenAmount, inputToken.decimals)
-        const totalToApprove = makerFee.plus(rawInputAmount)
-        await approveUSDC(totalToApprove)
-      } else {
-        await approveUSDC(makerFee)
+        await approveUSDC(rawInputAmount)
       }
     } catch {
       setIsApprovingUSDC(false)
     }
-  }, [makerFee, action, inputToken, inputTokenAmount, approveUSDC])
+  }, [action, inputToken, inputTokenAmount, approveUSDC])
 
   const approveOToken = useCallback(async () => {
     setIsApprovingOToken(true)
@@ -193,21 +178,21 @@ export default function MakeOrderDetail({ selectedOToken, usdcBalance, oTokenBal
   }, [usdcBalance, oTokenBalance, inputToken, inputTokenAmount, action, error])
 
   // if action === buy, this will always be false
-  const needApproveUSDCForFee = useMemo(() => (action === TradeAction.Sell ? makerFee.gt(usdcAllowance) : false), [
-    makerFee,
-    usdcAllowance,
-    action,
-  ])
+  // const needApproveUSDCForFee = useMemo(() => (action === TradeAction.Sell ? makerFee.gt(usdcAllowance) : false), [
+  //   makerFee,
+  //   usdcAllowance,
+  //   action,
+  // ])
 
   // check has enough input allowance
   useEffect(() => {
     const inputRawAmount = fromTokenAmount(inputTokenAmount, inputToken.decimals)
     if (action === TradeAction.Buy) {
-      setNeedApprove(usdcAllowance.lt(inputRawAmount.plus(makerFee)))
+      setNeedApprove(usdcAllowance.lt(inputRawAmount))
     } else {
       setNeedApprove(oTokenAllowance.lt(inputRawAmount))
     }
-  }, [action, oTokenAllowance, usdcAllowance, inputTokenAmount, inputToken, makerFee])
+  }, [action, oTokenAllowance, usdcAllowance, inputTokenAmount, inputToken])
 
   const createEncodedOrder = useCallback(async () => {
     const deadlineInSec = getDeadlineInSec(deadline, finalDeadlineUnit)
@@ -217,10 +202,10 @@ export default function MakeOrderDetail({ selectedOToken, usdcBalance, oTokenBal
     const order = await createOrder(
       inputToken.id,
       outputToken.id,
-      paymentToken.id,
+      // paymentToken.id,
       makerAssetAmount,
       takerAssetAmount,
-      makerFee,
+      // makerFee,
       expiry,
       takerAddress,
     )
@@ -233,7 +218,7 @@ export default function MakeOrderDetail({ selectedOToken, usdcBalance, oTokenBal
     finalDeadlineUnit,
     createOrder,
     deadline,
-    makerFee,
+    // makerFee,
     inputToken.decimals,
     inputToken.id,
     inputTokenAmount,
@@ -241,7 +226,7 @@ export default function MakeOrderDetail({ selectedOToken, usdcBalance, oTokenBal
     outputToken.id,
     outputTokenAmount,
     takerAddress,
-    paymentToken.id,
+    // paymentToken.id,
   ])
 
   return (
@@ -318,11 +303,7 @@ export default function MakeOrderDetail({ selectedOToken, usdcBalance, oTokenBal
 
       <SectionHeader title="Detail" />
       <TokenBalanceEntry label="Price" amount={price.toFixed(4)} symbol="USDC / oToken" />
-      <TokenBalanceEntry
-        label="Maker Fee"
-        amount={toTokenAmount(makerFee, paymentToken.decimals).toString()}
-        symbol={paymentToken.symbol}
-      />
+      <TokenBalanceEntry label="Maker Fee" amount={'0'} symbol={paymentToken.symbol} />
 
       <div style={{ display: 'flex' }}>
         <LabelText label={'Deadline'} minWidth={'150px'} />
@@ -336,18 +317,15 @@ export default function MakeOrderDetail({ selectedOToken, usdcBalance, oTokenBal
       <div style={{ display: 'flex' }}>
         <Button
           disabled={
-            needApproveInputToken ||
-            error !== Errors.NO_ERROR ||
-            inputTokenAmount.isZero() ||
-            inputTokenAmount.isNaN() ||
-            needApproveUSDCForFee // need to enable maker fee
+            needApproveInputToken || error !== Errors.NO_ERROR || inputTokenAmount.isZero() || inputTokenAmount.isNaN()
+            // needApproveUSDCForFee // need to enable maker fee
           }
           label={'Generate Order'}
           mode="strong"
           onClick={createEncodedOrder}
         />
         {/* Need to enable usdc in the following: it's a buy or sell nned approve USDC for fee */}
-        {((action === TradeAction.Buy && needApproveInputToken) || needApproveUSDCForFee) && (
+        {action === TradeAction.Buy && needApproveInputToken && (
           <Button
             label="approve-fee"
             icon={isApprovingUSDC ? <LoadingRing /> : <IconUnlock />}

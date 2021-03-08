@@ -7,11 +7,11 @@ import { useNotify } from './useNotify'
 import { SignedOrder } from '../types'
 import { useGasPrice } from './useGasPrice'
 import { useCustomToast } from './useCustomToast'
-import { zx_exchange, ZEROX_PROTOCOL_FEE_KEY, FeeTypes } from '../constants'
-import { assetDataUtils, signatureUtils, SupportedProvider } from '@0x/order-utils'
-import { MetamaskSubprovider } from '@0x/subproviders'
+import { ZEROX_PROTOCOL_FEE_KEY, FeeTypes } from '../constants'
+
 import { getPreference } from '../utils/storage'
 
+const v4orderUtils = require('@0x/protocol-utils')
 const FEE_PERORDER_PER_GWEI = 0.00007
 const FEE_RECIPIENT = '0xD325E15A52B780698C45CA3BdB6c49444fe5B588'
 
@@ -39,7 +39,7 @@ export function use0xExchange() {
 
   const getGasPriceForOrders = useCallback(
     (orders: SignedOrder[]) => {
-      const closestExpiry = Math.min(...orders.map(o => Number(o.expirationTimeSeconds) - Date.now() / 1000))
+      const closestExpiry = Math.min(...orders.map(o => Number(o.expiry) - Date.now() / 1000))
       return closestExpiry < 120 ? fastest : fast
     },
     [fast, fastest],
@@ -58,41 +58,47 @@ export function use0xExchange() {
 
   const createOrder = useCallback(
     async (
-      makerAsset: string,
-      takerAsset: string,
-      makerFeeAsset: string,
-      makerAssetAmount: BigNumber,
-      takerAssetAmount: BigNumber,
-      makerFee: BigNumber,
+      makerToken: string,
+      takerToken: string,
+      makerAmount: BigNumber,
+      takerAmount: BigNumber,
       expiry: number,
       takerAddress?: string,
     ) => {
-      const exchangeAddress = zx_exchange[networkId]
+      // const exchangeAddress = zx_exchange[networkId]
       const salt = BigNumber.random(20)
         .times(new BigNumber(10).pow(new BigNumber(20)))
         .integerValue()
-      const order = {
-        senderAddress: '0x0000000000000000000000000000000000000000',
-        makerAddress: user,
-        takerAddress: takerAddress ? takerAddress : '0x0000000000000000000000000000000000000000',
-        makerFee: makerFee,
-        takerFee: new BigNumber(0),
-        makerAssetAmount: makerAssetAmount,
-        takerAssetAmount: takerAssetAmount,
-        makerAssetData: assetDataUtils.encodeERC20AssetData(makerAsset),
-        takerAssetData: assetDataUtils.encodeERC20AssetData(takerAsset),
-        salt,
-        exchangeAddress,
-        feeRecipientAddress: FEE_RECIPIENT,
-        expirationTimeSeconds: new BigNumber(expiry).integerValue(),
-        makerFeeAssetData: makerFeeAsset ? assetDataUtils.encodeERC20AssetData(makerFeeAsset) : '0x',
+      const taker = takerAddress ? takerAddress : '0x0000000000000000000000000000000000000000'
+      const order = new v4orderUtils.LimitOrder({
         chainId: networkId,
-        takerFeeAssetData: '0x',
-      }
+        makerToken,
+        takerToken,
+        makerAmount,
+        takerAmount,
+        // takerTokenFeeAmount,
+        maker: user,
+        taker,
+        sender: '0x0000000000000000000000000000000000000000',
+        feeRecipient: FEE_RECIPIENT,
+        // pool:
+        expiry: new BigNumber(expiry).integerValue(),
+        salt,
+        // verifyingContract
+      })
       track('create-order')
-      const provider = new MetamaskSubprovider(web3.currentProvider as SupportedProvider)
-      return signatureUtils.ecSignOrderAsync(provider, order, user)
-      // return order;
+      const signature = await order.getSignatureWithProviderAsync(
+        web3.currentProvider as any,
+        v4orderUtils.SignatureType.EIP712,
+      )
+      // const provider = new MetamaskSubprovider(web3.currentProvider as SupportedProvider)
+      // return signatureUtils.ecSignOrderAsync(provider, order, user)
+      // return signature;
+
+      return {
+        ...order,
+        signature,
+      }
     },
     [networkId, user, web3, track],
   )
@@ -147,17 +153,19 @@ export function use0xExchange() {
 
   const broadcastOrder = useCallback(
     async (order: SignedOrder) => {
-      const url = `${httpEndpoint}sra/v3/orders`
+      const url = `${httpEndpoint}sra/v4/order`
       const res = await fetch(url, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify([order]),
+        body: JSON.stringify(order),
       })
+      console.log(`order`, JSON.stringify(order))
       if (res.status === 200) return toast.success('Order successfully broadcasted')
       const jsonRes = await res.json()
-      toast.error(jsonRes.validationErrors[0].reason)
+      console.log(`jsonRes`, JSON.stringify(jsonRes))
+      toast.error(jsonRes)
     },
     [httpEndpoint, toast],
   )

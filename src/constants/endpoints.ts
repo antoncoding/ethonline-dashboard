@@ -17,11 +17,11 @@ export const subgraph: graphEndPointType = {
 
 export const ZeroXEndpoint: { [key in SupportedNetworks]: { http: string; ws: string } } = {
   1: {
-    http: 'https://opyn.api.0x.org/',
-    ws: 'wss://api.0x.org/sra/v3',
+    http: 'https://api.0x.org/',
+    ws: 'wss://api.0x.org/sra/v4',
   },
   42: {
     http: 'https://kovan.api.0x.org/',
-    ws: 'wss://kovan.api.0x.org/sra/v3',
+    ws: 'wss://kovan.api.0x.org/sra/v4',
   },
 }

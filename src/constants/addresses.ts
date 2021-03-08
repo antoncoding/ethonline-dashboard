@@ -77,7 +77,7 @@ export const addresses: SystemAddresses = {
     pool: isPublic ? '0x5934807cC0654d46755eBd2848840b616256C6Ef' : '0x0Cb5BDBf1726f7CC720B21EA910ACeda9FdDf680',
     whitelist: isPublic ? '0xa5EA18ac6865f315ff5dD9f1a7fb1d41A30a6779' : '0x2244364c94a9FCb6f9ae3A4cF38f279706011882',
     zeroxExchange: '0x61935cbdd02287b511119ddb11aeb42f1593b7ef',
-    zeroxERCProxy: '0x95e6f48254609a6ee006f7d493c8e5fb97094cef',
+    zeroxERCProxy: '0xdef1c0ded9bec7f1a1670819833240f027b25eff',
     zeroxStaking: '0xa26e80e7dea86279c6d778d702cc413e6cffa777',
   },
   '42': {
