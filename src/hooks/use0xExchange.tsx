@@ -15,7 +15,7 @@ const v4orderUtils = require('@0x/protocol-utils')
 const FEE_PERORDER_PER_GWEI = 0.00007
 const FEE_RECIPIENT = '0xD325E15A52B780698C45CA3BdB6c49444fe5B588'
 
-const abi = require('../constants/abis/0xExchange.json')
+const abi = require('../constants/abis/0xV4Exchange.json')
 
 export function use0xExchange() {
   const payWithWeth = useMemo(() => getPreference(ZEROX_PROTOCOL_FEE_KEY, FeeTypes.ETH) === FeeTypes.WETH, [])
@@ -114,8 +114,11 @@ export function use0xExchange() {
       const feeInEth = getProtocolFee(orders).toString()
       const amountsStr = amounts.map(amount => amount.toString())
 
+      console.log(`only filling first order la`)
+
+      // change to batch Fill when it's live
       await exchange.methods
-        .batchFillOrders(orders, amountsStr, signatures)
+        .fillLimitOrder(orders[0], amountsStr[0], signatures[0])
         .send({
           from: user,
           value: payWithWeth ? '0' : web3.utils.toWei(feeInEth, 'ether'),
@@ -139,7 +142,7 @@ export function use0xExchange() {
       const amountStr = amount.toString()
 
       await exchange.methods
-        .fillOrder(order, amountStr, signature)
+        .fillLimitOrder(order, amountStr, signature)
         .send({
           from: user,
           value: payWithWeth ? '0' : web3.utils.toWei(feeInEth, 'ether'),
