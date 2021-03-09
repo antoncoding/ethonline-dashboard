@@ -159,7 +159,7 @@ export async function getOTokenUSDCOrderBook(
 }> {
   const quote = getUSDC(networkId).id
   const endpoint = ZeroXEndpoint[networkId].http
-  const url = `${endpoint}sra/v4/orderbook?baseToken=${oToken}&baseToken=${quote}&perPage=${100}`
+  const url = `${endpoint}sra/v4/orderbook?baseToken=${oToken}&quoteToken=${quote}&perPage=${100}`
   try {
     const res = await fetch(url)
     // refetch in 0.5 sec

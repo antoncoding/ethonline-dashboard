@@ -13,7 +13,7 @@ import { getPreference } from '../utils/storage'
 
 const v4orderUtils = require('@0x/protocol-utils')
 const FEE_PERORDER_PER_GWEI = 0.00007
-const FEE_RECIPIENT = '0xD325E15A52B780698C45CA3BdB6c49444fe5B588'
+// const FEE_RECIPIENT = '0xd325e15a52b780698c45ca3bdb6c49444fe5b588'
 
 const abi = require('../constants/abis/0xV4Exchange.json')
 
@@ -66,9 +66,7 @@ export function use0xExchange() {
       takerAddress?: string,
     ) => {
       // const exchangeAddress = zx_exchange[networkId]
-      const salt = BigNumber.random(20)
-        .times(new BigNumber(10).pow(new BigNumber(20)))
-        .integerValue()
+      const salt = new BigNumber(Date.now()).integerValue().toString()
       const taker = takerAddress ? takerAddress : '0x0000000000000000000000000000000000000000'
       const order = new v4orderUtils.LimitOrder({
         chainId: networkId,
@@ -80,7 +78,7 @@ export function use0xExchange() {
         maker: user,
         taker,
         sender: '0x0000000000000000000000000000000000000000',
-        feeRecipient: FEE_RECIPIENT,
+        // feeRecipient: FEE_RECIPIENT,
         // pool:
         expiry: new BigNumber(expiry).integerValue(),
         salt,
@@ -114,11 +112,11 @@ export function use0xExchange() {
       const feeInEth = getProtocolFee(orders).toString()
       const amountsStr = amounts.map(amount => amount.toString())
 
-      console.log(`only filling first order la`)
+      console.log(`only filling first order la, orders[0]`, orders[0])
 
       // change to batch Fill when it's live
       await exchange.methods
-        .fillLimitOrder(orders[0], amountsStr[0], signatures[0])
+        .fillLimitOrder(orders[0], signatures[0], amountsStr[0])
         .send({
           from: user,
           value: payWithWeth ? '0' : web3.utils.toWei(feeInEth, 'ether'),
@@ -135,14 +133,16 @@ export function use0xExchange() {
     async (order: SignedOrder, amount: BigNumber) => {
       const exchange = new web3.eth.Contract(abi, addresses[networkId].zeroxExchange)
 
-      const signature = order.signature
+      // const signature = order.signature
 
       const gasPrice = getGasPriceForOrders([order])
       const feeInEth = getProtocolFee([order]).toString()
       const amountStr = amount.toString()
 
+      console.log(`order to fill`, order)
+
       await exchange.methods
-        .fillLimitOrder(order, amountStr, signature)
+        .fillLimitOrder(order, amountStr)
         .send({
           from: user,
           value: payWithWeth ? '0' : web3.utils.toWei(feeInEth, 'ether'),
