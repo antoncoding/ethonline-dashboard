@@ -12,10 +12,8 @@ export function useUserAllowance(token: string, spender: Spenders) {
   const spenderAddess = useMemo(() => {
     return spender === Spenders.MarginPool
       ? addresses[networkId].pool
-      : spender === Spenders.ZeroXERC20Proxy
-      ? addresses[networkId].zeroxERCProxy
-      : spender === Spenders.ZeroXStaking
-      ? addresses[networkId].zeroxStaking
+      : spender === Spenders.ZeroXExchange
+      ? addresses[networkId].zeroxExchange
       : ''
   }, [spender, networkId])
 

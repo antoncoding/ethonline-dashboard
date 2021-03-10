@@ -17,7 +17,7 @@ function ZeroXFee() {
 
   const weth = useMemo(() => getWeth(networkId), [networkId])
 
-  const { allowance, approve } = useUserAllowance(weth.id, Spenders.ZeroXStaking)
+  const { allowance, approve } = useUserAllowance(weth.id, Spenders.ZeroXExchange)
 
   const [payWithWeth, SetPayWithWeth] = useState(mode === FeeTypes.WETH)
 

@@ -74,10 +74,10 @@ export default function LimitTicket({
   const [needApprove, setNeedApprove] = useState(true)
   const [isApproving, setIsApproving] = useState(false)
 
-  const { allowance: usdcAllowance, approve: approveUSDC } = useUserAllowance(paymentToken.id, Spenders.ZeroXERC20Proxy)
+  const { allowance: usdcAllowance, approve: approveUSDC } = useUserAllowance(paymentToken.id, Spenders.ZeroXExchange)
   const { allowance: oTokenAllowance, approve: approveOToken } = useUserAllowance(
     selectedOToken.id,
-    Spenders.ZeroXERC20Proxy,
+    Spenders.ZeroXExchange,
   )
 
   const approve = useCallback(async () => {

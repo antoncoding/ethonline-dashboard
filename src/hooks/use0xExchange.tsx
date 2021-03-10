@@ -7,9 +7,9 @@ import { useNotify } from './useNotify'
 import { SignedOrder } from '../types'
 import { useGasPrice } from './useGasPrice'
 import { useCustomToast } from './useCustomToast'
-import { ZEROX_PROTOCOL_FEE_KEY, FeeTypes } from '../constants'
+// import { ZEROX_PROTOCOL_FEE_KEY, FeeTypes } from '../constants'
 
-import { getPreference } from '../utils/storage'
+// import { getPreference } from '../utils/storage'
 
 const v4orderUtils = require('@0x/protocol-utils')
 const FEE_PERORDER_PER_GWEI = 0.00007
@@ -18,7 +18,7 @@ const FEE_PERORDER_PER_GWEI = 0.00007
 const abi = require('../constants/abis/0xV4Exchange.json')
 
 export function use0xExchange() {
-  const payWithWeth = useMemo(() => getPreference(ZEROX_PROTOCOL_FEE_KEY, FeeTypes.ETH) === FeeTypes.WETH, [])
+  // const payWithWeth = useMemo(() => getPreference(ZEROX_PROTOCOL_FEE_KEY, FeeTypes.ETH) === FeeTypes.WETH, [])
 
   const toast = useCustomToast()
   const { networkId, web3, user } = useConnectedWallet()
@@ -119,14 +119,14 @@ export function use0xExchange() {
         .fillLimitOrder(orders[0], signatures[0], amountsStr[0])
         .send({
           from: user,
-          value: payWithWeth ? '0' : web3.utils.toWei(feeInEth, 'ether'),
+          value: web3.utils.toWei(feeInEth, 'ether'),
           gasPrice: web3.utils.toWei(gasPrice.toString(), 'gwei'),
         })
         .on('transactionHash', notifyCallback)
 
       track('fill-order')
     },
-    [networkId, getProtocolFee, getGasPriceForOrders, notifyCallback, toast, user, web3, track, payWithWeth],
+    [networkId, getProtocolFee, getGasPriceForOrders, notifyCallback, toast, user, web3, track],
   )
 
   const fillOrder = useCallback(
@@ -145,13 +145,13 @@ export function use0xExchange() {
         .fillLimitOrder(order, amountStr)
         .send({
           from: user,
-          value: payWithWeth ? '0' : web3.utils.toWei(feeInEth, 'ether'),
+          value: web3.utils.toWei(feeInEth, 'ether'),
           gasPrice: web3.utils.toWei(gasPrice.toString(), 'gwei'),
         })
         .on('transactionHash', notifyCallback)
       track('fill-order')
     },
-    [networkId, getProtocolFee, getGasPriceForOrders, notifyCallback, user, web3, track, payWithWeth],
+    [networkId, getProtocolFee, getGasPriceForOrders, notifyCallback, user, web3, track],
   )
 
   const broadcastOrder = useCallback(
@@ -178,7 +178,7 @@ export function use0xExchange() {
       const exchange = new web3.eth.Contract(abi, addresses[networkId].zeroxExchange)
 
       await exchange.methods
-        .batchCancelOrders(orders)
+        .batchCancelLimitOrders(orders)
         .send({
           from: user,
         })

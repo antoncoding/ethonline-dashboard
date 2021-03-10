@@ -2,15 +2,14 @@ import React, { useState, useMemo, useEffect, useCallback } from 'react'
 import { TextInput, Button, Timer, IconUnlock, LoadingRing } from '@aragon/ui'
 import BigNumber from 'bignumber.js'
 import { OTokenBalance, SignedOrder, SubgraphOToken, Token } from '../../../types'
-import { getUSDC, ZEROX_PROTOCOL_FEE_KEY, FeeTypes, Errors, Spenders, ZERO_ADDR } from '../../../constants'
+import { getUSDC, Errors, Spenders, ZERO_ADDR } from '../../../constants'
 
 import SectionHeader from '../../../components/SectionHeader'
 import LabelText from '../../../components/LabelText'
 import TokenBalanceEntry from '../../../components/TokenBalanceEntry'
 
 import { useConnectedWallet } from '../../../contexts/wallet'
-import { toTokenAmount, fromTokenAmount } from '../../../utils/math'
-import { getPreference } from '../../../utils/storage'
+import { toTokenAmount } from '../../../utils/math'
 import { use0xExchange } from '../../../hooks/use0xExchange'
 import WarningText from '../../../components/Warning'
 import { useUserAllowance } from '../../../hooks/useAllowance'
@@ -41,7 +40,7 @@ export default function TakerOrder({ oTokenBalances, wethBalance, usdcBalance, a
 
   const [isApproving, setIsApproving] = useState(false)
 
-  const payFeeWithWeth = useMemo(() => getPreference(ZEROX_PROTOCOL_FEE_KEY, FeeTypes.ETH) === FeeTypes.WETH, [])
+  // const payFeeWithWeth = useMemo(() => getPreference(ZEROX_PROTOCOL_FEE_KEY, FeeTypes.ETH) === FeeTypes.WETH, [])
 
   const takerAssetBalance = useMemo(
     () =>
@@ -76,10 +75,10 @@ export default function TakerOrder({ oTokenBalances, wethBalance, usdcBalance, a
 
   // denominated in eth
   const protocolFee = useMemo(() => (order ? getProtocolFee([order]) : new BigNumber(0)), [getProtocolFee, order])
-  const hasEnoughWeth = useMemo(() => wethBalance.gt(fromTokenAmount(protocolFee, 18)), [protocolFee, wethBalance])
+  // const hasEnoughWeth = useMemo(() => wethBalance.gt(fromTokenAmount(protocolFee, 18)), [protocolFee, wethBalance])
 
   // get taker asset allowance
-  const { approve, allowance } = useUserAllowance(takerAsset?.id || usdc.id, Spenders.ZeroXERC20Proxy)
+  const { approve, allowance } = useUserAllowance(takerAsset?.id || usdc.id, Spenders.ZeroXExchange)
 
   const needApprove = useMemo(() => (order ? new BigNumber(order.takerAmount).gt(allowance) : false), [
     order,
@@ -145,19 +144,12 @@ export default function TakerOrder({ oTokenBalances, wethBalance, usdcBalance, a
             />
           )}
 
-          <TokenBalanceEntry
-            label="Protocol Fee"
-            amount={protocolFee.toString()}
-            symbol={payFeeWithWeth ? 'WETH' : 'ETH'}
-          />
-          <WarningText show={payFeeWithWeth && !hasEnoughWeth} text={Errors.INSUFFICIENT_BALANCE} />
+          <TokenBalanceEntry label="Protocol Fee" amount={protocolFee.toString()} symbol={'ETH'} />
 
           <br />
           <div style={{ display: 'flex' }}>
             <Button
-              disabled={
-                (payFeeWithWeth && !hasEnoughWeth) || balanceError !== Errors.NO_ERROR || needApprove || !takable
-              }
+              disabled={balanceError !== Errors.NO_ERROR || needApprove || !takable}
               mode="strong"
               label="Fill order"
               onClick={handleFillOrder}

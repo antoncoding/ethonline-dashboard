@@ -29,6 +29,5 @@ export enum Errors {
 
 export enum Spenders {
   MarginPool,
-  ZeroXERC20Proxy,
-  ZeroXStaking,
+  ZeroXExchange,
 }

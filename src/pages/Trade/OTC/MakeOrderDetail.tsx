@@ -88,10 +88,10 @@ export default function MakeOrderDetail({ selectedOToken, usdcBalance, oTokenBal
   ])
 
   const [needApproveInputToken, setNeedApprove] = useState(true)
-  const { allowance: usdcAllowance, approve: approveUSDC } = useUserAllowance(paymentToken.id, Spenders.ZeroXERC20Proxy)
+  const { allowance: usdcAllowance, approve: approveUSDC } = useUserAllowance(paymentToken.id, Spenders.ZeroXExchange)
   const { allowance: oTokenAllowance, approve: approveOTokenZX } = useUserAllowance(
     selectedOToken.id,
-    Spenders.ZeroXERC20Proxy,
+    Spenders.ZeroXExchange,
   )
 
   const approveUSDCAndFee = useCallback(async () => {

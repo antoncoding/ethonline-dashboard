@@ -7,7 +7,7 @@ import { SubgraphOToken, SignedOrder, OTokenBalance } from '../../../types'
 import { calculateOrderInput, calculateOrderOutput } from '../../../utils/0x-utils'
 import { toTokenAmount, fromTokenAmount } from '../../../utils/math'
 
-import { TradeAction, Errors, Spenders, getWeth, ZEROX_PROTOCOL_FEE_KEY, FeeTypes } from '../../../constants'
+import { TradeAction, Errors, Spenders } from '../../../constants'
 import { useConnectedWallet } from '../../../contexts/wallet'
 import { getUSDC } from '../../../constants/addresses'
 
@@ -20,7 +20,7 @@ import { simplifyOTokenSymbol } from '../../../utils/others'
 import WarningText from '../../../components/Warning'
 import LabelText from '../../../components/LabelText'
 import TokenBalanceEntry from '../../../components/TokenBalanceEntry'
-import { getPreference } from '../../../utils/storage'
+// import { getPreference } from '../../../utils/storage'
 
 enum Updates {
   Input,
@@ -44,16 +44,13 @@ export default function MarketTicket({
   selectedOToken,
   oTokenBalances,
   usdcBalance,
-  wethBalance,
+  // wethBalance,
   inputTokenAmount,
   setInputTokenAmount,
   outputTokenAmount,
   setOutputTokenAmount,
 }: MarketTicketProps) {
   const { networkId } = useConnectedWallet()
-
-  const payFeeWithWeth = useMemo(() => getPreference(ZEROX_PROTOCOL_FEE_KEY, FeeTypes.ETH) === FeeTypes.WETH, [])
-  const weth = useMemo(() => getWeth(networkId), [networkId])
 
   const paymentToken = useMemo(() => getUSDC(networkId), [networkId])
 
@@ -94,10 +91,10 @@ export default function MarketTicket({
   const [needApprove, setNeedApprove] = useState(true)
   const [isApproving, setIsApproving] = useState(false)
 
-  const { allowance: usdcAllowance, approve: approveUSDC } = useUserAllowance(paymentToken.id, Spenders.ZeroXERC20Proxy)
+  const { allowance: usdcAllowance, approve: approveUSDC } = useUserAllowance(paymentToken.id, Spenders.ZeroXExchange)
   const { allowance: oTokenAllowance, approve: approveOToken } = useUserAllowance(
     selectedOToken.id,
-    Spenders.ZeroXERC20Proxy,
+    Spenders.ZeroXExchange,
   )
 
   const approve = useCallback(async () => {
@@ -132,21 +129,21 @@ export default function MarketTicket({
     return getProtocolFee(ordersToFill)
   }, [getProtocolFee, ordersToFill])
 
-  const [isApprovingWeth, setIsApprovingWeth] = useState(false)
-  const { allowance: wethAllowance, approve: approveWeth } = useUserAllowance(weth.id, Spenders.ZeroXStaking)
-  const needApproveWeth = useMemo(() => payFeeWithWeth && toTokenAmount(wethAllowance, 18).lt(protocolFee), [
-    protocolFee,
-    wethAllowance,
-    payFeeWithWeth,
-  ])
+  // const [isApprovingWeth, setIsApprovingWeth] = useState(false)
+  // const { allowance: wethAllowance, approve: approveWeth } = useUserAllowance(weth.id, Spenders.ZeroXStaking)
+  // const needApproveWeth = useMemo(() => payFeeWithWeth && toTokenAmount(wethAllowance, 18).lt(protocolFee), [
+  //   protocolFee,
+  //   wethAllowance,
+  //   payFeeWithWeth,
+  // ])
 
-  const handleClickUnlockWeth = useCallback(async () => {
-    setIsApprovingWeth(true)
-    await approveWeth()
-    setIsApprovingWeth(false)
-  }, [approveWeth])
+  // const handleClickUnlockWeth = useCallback(async () => {
+  //   setIsApprovingWeth(true)
+  //   await approveWeth()
+  //   setIsApprovingWeth(false)
+  // }, [approveWeth])
 
-  const hasEnoughWeth = useMemo(() => protocolFee.lte(toTokenAmount(wethBalance, 18)), [protocolFee, wethBalance])
+  // const hasEnoughWeth = useMemo(() => protocolFee.lte(toTokenAmount(wethBalance, 18)), [protocolFee, wethBalance])
 
   // when buy/sell is click, reset a few things
   useEffect(() => {
@@ -283,12 +280,8 @@ export default function MarketTicket({
       </Row>
       <br />
       <TokenBalanceEntry label="Avg. Price" amount={price.toFixed(4)} symbol={paymentToken.symbol} />
-      <TokenBalanceEntry
-        label="Protocol Fee"
-        amount={protocolFee.toString()}
-        symbol={payFeeWithWeth ? 'WETH' : 'ETH'}
-      />
-      <WarningText show={payFeeWithWeth && !hasEnoughWeth} text="Insufficient WETH balance" />
+      <TokenBalanceEntry label="Protocol Fee" amount={protocolFee.toString()} symbol={'ETH'} />
+      {/* <WarningText show={payFeeWithWeth && !hasEnoughWeth} text="Insufficient WETH balance" /> */}
       <br />
       <TokenBalanceEntry
         label="oToken Balance"
@@ -309,13 +302,7 @@ export default function MarketTicket({
 
       <div style={{ display: 'flex', paddingTop: '20px' }}>
         <Button
-          disabled={
-            (payFeeWithWeth && (!hasEnoughWeth || needApproveWeth)) ||
-            needApprove ||
-            error !== Errors.NO_ERROR ||
-            inputTokenAmount.isZero() ||
-            inputTokenAmount.isNaN()
-          }
+          disabled={needApprove || error !== Errors.NO_ERROR || inputTokenAmount.isZero() || inputTokenAmount.isNaN()}
           label={action === TradeAction.Buy ? 'Confirm Buy' : 'Confirm Sell'}
           mode={action === TradeAction.Buy ? 'positive' : 'negative'}
           onClick={fill}
@@ -326,14 +313,6 @@ export default function MarketTicket({
             icon={isApproving ? <LoadingRing /> : <IconUnlock />}
             display="icon"
             onClick={approve}
-          />
-        )}
-        {needApproveWeth && (
-          <Button
-            label="approve"
-            icon={isApprovingWeth ? <LoadingRing /> : <IconUnlock />}
-            display="icon"
-            onClick={handleClickUnlockWeth}
           />
         )}
       </div>

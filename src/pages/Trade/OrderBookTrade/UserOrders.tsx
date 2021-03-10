@@ -1,5 +1,5 @@
 import React, { useMemo, useCallback, useState, useEffect } from 'react'
-import { DataView, Timer, Button, LoadingRing, CircleGraph } from '@aragon/ui'
+import { DataView, Timer, Button, LoadingRing } from '@aragon/ui'
 import { SubgraphOToken, OrderWithMetaData } from '../../../types'
 import { useOrderbook } from '../../../contexts/orderbook'
 import { getAskPrice, getBidPrice, getRemainingAmounts } from '../../../utils/0x-utils'
@@ -42,21 +42,34 @@ export default function UserOrders({ selectedOToken }: OrderbookProps) {
 
   const renderRow = useCallback(
     (order: OrderWithMetaData) => {
-      const filled =
-        1 - new BigNumber(order.metaData.remainingFillableTakerAssetAmount).div(order.order.takerAmount).toNumber()
-      if (order.order.makerToken === usdc.id) {
+      const isBid = order.order.makerToken === usdc.id
+
+      const remainingPercentage = new BigNumber(order.metaData.remainingFillableTakerAssetAmount)
+        .div(order.order.takerAmount)
+        .toNumber()
+
+      // 1 - new BigNumber(order.metaData.remainingFillableTakerAssetAmount).div(order.order.takerAmount).toNumber()
+      if (isBid) {
+        const amonutLeft = toTokenAmount(order.metaData.remainingFillableTakerAssetAmount, 8)
+        const amountShown =
+          remainingPercentage === 1
+            ? amonutLeft.toFixed(2)
+            : `${amonutLeft.toFixed(2)} (${remainingPercentage * 100} %)`
         // bid
         return [
-          green(getBidPrice(order.order, 6, 8).toFixed(4)),
-          toTokenAmount(order.metaData.remainingFillableTakerAssetAmount, 8).toFixed(2),
-          <CircleGraph value={filled} size={30} strokeWidth={3} />,
+          green(getBidPrice(order.order, 6, 8).toFixed(2)),
+          amountShown,
           <Timer format="ms" showIcon end={new Date(Number(order.order.expiry) * 1000)} />,
         ]
       } else {
+        const amonutLeft = toTokenAmount(getRemainingAmounts(order).remainingMakerAssetAmount, 8)
+        const amountShown =
+          remainingPercentage === 1
+            ? amonutLeft.toFixed(2)
+            : `${amonutLeft.toFixed(2)} (${remainingPercentage * 100} %)`
         return [
-          red(getAskPrice(order.order, 8, 6).toFixed(4)),
-          toTokenAmount(getRemainingAmounts(order).remainingMakerAssetAmount, 8).toFixed(2),
-          <CircleGraph value={filled} size={30} strokeWidth={3} />,
+          red(getAskPrice(order.order, 8, 6).toFixed(2)),
+          amountShown,
           <Timer format="ms" showIcon end={new Date(Number(order.order.expiry) * 1000)} />,
         ]
       }
@@ -102,7 +115,7 @@ export default function UserOrders({ selectedOToken }: OrderbookProps) {
             onSelectEntries={onSelectEntries}
             selection={selectedIdxs}
             renderSelectionCount={x => `${x} Orders Selected`}
-            fields={['My Orders', 'amount', 'filled', 'expiration']}
+            fields={['My Orders', 'amount', 'expiration']}
             renderEntry={renderRow}
           />
           {selectedIdxs.length > 0 && (
