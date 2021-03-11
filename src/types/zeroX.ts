@@ -2,7 +2,7 @@ export type OrderWithMetaData = {
   order: SignedOrder
   metaData: {
     orderHash: string
-    remainingFillableTakerAssetAmount: string
+    remainingFillableTakerAmount: string
   }
 }
 

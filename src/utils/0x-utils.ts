@@ -139,7 +139,7 @@ export const getRemainingAmounts = (
   remainingTakerAssetAmount: BigNumber
   remainingMakerAssetAmount: BigNumber
 } => {
-  const remainingTakerAssetAmount = new BigNumber(order.metaData.remainingFillableTakerAssetAmount)
+  const remainingTakerAssetAmount = new BigNumber(order.metaData.remainingFillableTakerAmount)
   const makerAssetAmountBN = new BigNumber(order.order.makerAmount)
   const takerAssetAmountBN = new BigNumber(order.order.takerAmount)
   const remainingMakerAssetAmount = remainingTakerAssetAmount.multipliedBy(makerAssetAmountBN).div(takerAssetAmountBN)
@@ -205,7 +205,7 @@ const isValid = (entry: OrderWithMetaData) => {
 }
 
 export const getOrderFillRatio = (order: OrderWithMetaData) =>
-  new BigNumber(order.metaData.remainingFillableTakerAssetAmount).div(new BigNumber(order.order.takerAmount)).times(100)
+  new BigNumber(order.metaData.remainingFillableTakerAmount).div(new BigNumber(order.order.takerAmount)).times(100)
 
 /**
  *
@@ -323,7 +323,7 @@ export const getTotalAskAmount = (asks: OrderWithMetaData[], decimals: number): 
  */
 export const getTotalBidAmount = (bids: OrderWithMetaData[], decimals: number): BigNumber => {
   return bids.reduce(
-    (prev, cur) => prev.plus(toTokenAmount(cur.metaData.remainingFillableTakerAssetAmount, decimals)),
+    (prev, cur) => prev.plus(toTokenAmount(cur.metaData.remainingFillableTakerAmount, decimals)),
     new BigNumber(0),
   )
 }
@@ -361,7 +361,7 @@ export const calculateOrderOutput = (orderInfos: OrderWithMetaData[], amount: Bi
 
   for (const { metaData, order } of orderInfos) {
     // amonunt of oToken fillable. always an integer
-    const fillable = new BigNumber(metaData.remainingFillableTakerAssetAmount)
+    const fillable = new BigNumber(metaData.remainingFillableTakerAmount)
 
     ordersToFill.push(order)
 
@@ -422,7 +422,7 @@ export const calculateOrderInput = (orderInfos: OrderWithMetaData[], amount: Big
   const amounts: BigNumber[] = []
 
   for (const { metaData, order } of orderInfos) {
-    const fillableTakerAmount = new BigNumber(metaData.remainingFillableTakerAssetAmount)
+    const fillableTakerAmount = new BigNumber(metaData.remainingFillableTakerAmount)
 
     const fillableMakerAmount = new BigNumber(order.makerAmount)
       .times(fillableTakerAmount)

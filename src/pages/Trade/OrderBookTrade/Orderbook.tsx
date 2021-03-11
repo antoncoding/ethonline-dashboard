@@ -43,7 +43,7 @@ export default function Orderbook({ selectedOToken, action }: OrderbookProps) {
       const isBid = usdc.id === order.order.makerToken
 
       const remainingAmounts = isBid
-        ? toTokenAmount(order.metaData.remainingFillableTakerAssetAmount, 8).toFixed(2)
+        ? toTokenAmount(order.metaData.remainingFillableTakerAmount, 8).toFixed(2)
         : toTokenAmount(getRemainingAmounts(order).remainingMakerAssetAmount, 8).toFixed(2)
 
       const price = isBid

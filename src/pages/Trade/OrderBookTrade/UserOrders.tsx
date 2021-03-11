@@ -44,13 +44,13 @@ export default function UserOrders({ selectedOToken }: OrderbookProps) {
     (order: OrderWithMetaData) => {
       const isBid = order.order.makerToken === usdc.id
 
-      const remainingPercentage = new BigNumber(order.metaData.remainingFillableTakerAssetAmount)
+      const remainingPercentage = new BigNumber(order.metaData.remainingFillableTakerAmount)
         .div(order.order.takerAmount)
         .toNumber()
 
-      // 1 - new BigNumber(order.metaData.remainingFillableTakerAssetAmount).div(order.order.takerAmount).toNumber()
+      // 1 - new BigNumber(order.metaData.remainingFillableTakerAmount).div(order.order.takerAmount).toNumber()
       if (isBid) {
-        const amonutLeft = toTokenAmount(order.metaData.remainingFillableTakerAssetAmount, 8)
+        const amonutLeft = toTokenAmount(order.metaData.remainingFillableTakerAmount, 8)
         const amountShown =
           remainingPercentage === 1
             ? amonutLeft.toFixed(2)

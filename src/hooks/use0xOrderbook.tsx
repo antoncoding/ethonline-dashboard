@@ -46,7 +46,7 @@ function orderbookReducer(
             orderBookForThisOToken.bids = orderBookForThisOToken.bids.filter(isValidBid)
           } else {
             // no orderbook for this oToken
-            if (orderInfo.metaData.remainingFillableTakerAssetAmount !== '0') {
+            if (orderInfo.metaData.remainingFillableTakerAmount !== '0') {
               const bids = [orderInfo]
               orderbooksCopy.push({ bids, asks: [], id: token })
             }
@@ -65,7 +65,7 @@ function orderbookReducer(
             orderBookForThisOToken.asks = orderBookForThisOToken.asks.filter(isValidAsk)
           } else {
             // no orderbook for this oToken
-            if (orderInfo.metaData.remainingFillableTakerAssetAmount !== '0') {
+            if (orderInfo.metaData.remainingFillableTakerAmount !== '0') {
               const asks = [orderInfo]
               orderbooksCopy.push({ asks, bids: [], id: token })
             }

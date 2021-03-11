@@ -164,10 +164,8 @@ export function use0xExchange() {
         },
         body: JSON.stringify(order),
       })
-      console.log(`order`, JSON.stringify(order))
       if (res.status === 200) return toast.success('Order successfully broadcasted')
       const jsonRes = await res.json()
-      console.log(`jsonRes`, JSON.stringify(jsonRes))
       toast.error(jsonRes)
     },
     [httpEndpoint, toast],
