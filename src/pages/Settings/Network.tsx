@@ -13,6 +13,10 @@ const items = [
     description: `Subgraph endpoint: ${subgraph[SupportedNetworks.Mainnet]}`,
   },
   {
+    title: 'Ropsten',
+    description: `Subgraph endpoint: ${subgraph[SupportedNetworks.Ropsten]}`,
+  },
+  {
     title: 'Kovan',
     description: `Subgraph endpoint: ${subgraph[SupportedNetworks.Kovan]}`,
   },
@@ -20,7 +24,8 @@ const items = [
 
 const networkIdToIdx = {
   1: 0,
-  42: 1,
+  3: 1,
+  42: 2,
 }
 
 function Network() {

@@ -31,6 +31,29 @@ export const tokens: TokensTyps = {
       decimals: 18,
     },
   ],
+  '3': [
+    eth,
+    {
+      name: 'Opyn USDC',
+      id: '0x8bE3A2a5C37b16c6EAa2bE6A3FA1cf1E465f8691',
+      symbol: 'USDC',
+      decimals: 6,
+      canMint: true,
+    },
+    {
+      name: 'Wrapped Ether',
+      id: '0xc778417e063141139fce010982780140aa0cd5ab',
+      symbol: 'WETH',
+      decimals: 18,
+    },
+    {
+      name: 'Opyn Wrapped Bitcoin',
+      id: '0x6b8BAF03CB00f8F1FA94999B71047FEa06f7251a',
+      symbol: 'WBTC',
+      decimals: 8,
+      canMint: true,
+    },
+  ],
   '42': [
     eth,
     {
@@ -76,6 +99,14 @@ export const addresses: SystemAddresses = {
     whitelist: isPublic ? '0xa5EA18ac6865f315ff5dD9f1a7fb1d41A30a6779' : '0x2244364c94a9FCb6f9ae3A4cF38f279706011882',
     zeroxExchange: '0xdef1c0ded9bec7f1a1670819833240f027b25eff',
   },
+  '3': {
+    controller: '0x7e9beaccdccee88558aaa2dc121e52ec6226864e',
+    factory: '0x8d6994b701f480c27757c5fe2bd93d5352160081',
+    addressBook: '0xe71417eefc794c9b83fc494861981721e26db0e9',
+    pool: '0x3C325EeBB64495665F5376930d30151C1075bFD8',
+    whitelist: '0x5faCA6DF39c897802d752DfCb8c02Ea6959245Fc',
+    zeroxExchange: '0xfb2dd2a1366de37f7241c83d47da58fd503e2c64', // v3
+  },
   '42': {
     controller: isPublic ? '0xdee7d0f8ccc0f7ac7e45af454e5e7ec1552e8e4e' : '0xa84cff11957a0a08a3e1d568ed1caaf47626c1f3',
     factory: isPublic ? '0xb9d17ab06e27f63d0fd75099d5874a194ee623e2' : '0x32b5a18238BAdF23F8E88669de2bD3671ff7BF83',
@@ -88,6 +119,7 @@ export const addresses: SystemAddresses = {
 
 export const blacklistOTokens = {
   '1': [ZERO_ADDR],
+  '3': [ZERO_ADDR],
   '42': [ZERO_ADDR],
 }
 
@@ -105,6 +137,15 @@ export const knownOperators: {
   '1': [
     {
       address: isPublic ? '0x8f7dd610c457fc7cb26b0f9db4e77581f94f70ac' : '0xa05157b27b7db2eb63bb0c11412b71e7de027f89',
+      name: 'PayableProxy',
+      description: 'Proxy contract to help mint calls with ETH instead of WETH',
+      audited: true,
+      author: 'Opyn',
+    },
+  ],
+  '3': [
+    {
+      address: '0x7173D861Ce9304ED62B7d3Fbfb3A79C51b566614',
       name: 'PayableProxy',
       description: 'Proxy contract to help mint calls with ETH instead of WETH',
       audited: true,

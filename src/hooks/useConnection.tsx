@@ -34,7 +34,11 @@ export const useConnection = () => {
 
   const onboard = useMemo(() => {
     function _handleNetworkChange(_networkId) {
-      if (_networkId === 1 || _networkId === 42) {
+      if (
+        _networkId === SupportedNetworks.Mainnet ||
+        _networkId === SupportedNetworks.Ropsten ||
+        _networkId === SupportedNetworks.Kovan
+      ) {
         setNetworkId(_networkId)
         storePreference('gamma-networkId', networkId.toString())
       }
@@ -81,7 +85,7 @@ export const useConnection = () => {
 }
 
 export const initOnboard = (addressChangeCallback, walletChangeCallback, networkChangeCallback, networkId) => {
-  const networkname = networkId === 1 ? 'mainnet' : 'kovan'
+  const networkname = networkId === 1 ? 'mainnet' : networkId === 3 ? 'ropsten' : 'kovan'
   const RPC_URL = `https://${networkname}.infura.io/v3/${INFURA_KEY}`
   const onboard = Onboard({
     darkMode: getPreference('theme', 'light') === 'dark',
@@ -101,6 +105,8 @@ export const initOnboard = (addressChangeCallback, walletChangeCallback, network
           rpc: {
             // eslint-disable-next-line
             ['1']: RPC_URL,
+            // eslint-disable-next-line
+            ['3']: RPC_URL,
             // eslint-disable-next-line
             ['42']: RPC_URL,
           }, // [Optional]

@@ -184,8 +184,6 @@ export default function LimitTicket({
       expiry,
     )
 
-    console.log(`final order`, order)
-
     if (order) await broadcastOrder(order as any)
   }, [
     finalDeadlineUnit,

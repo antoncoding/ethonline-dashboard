@@ -6,7 +6,7 @@ import {
   OTokenOrderBook,
   OTokenOrderBookWithDetail,
 } from '../types'
-import { ZeroXEndpoint, getUSDC, OrderType, Errors, MIN_BID, MAX_ASK, ZERO_ADDR } from '../constants'
+import { ZeroXEndpoint, getUSDC, OrderType, Errors, MIN_BID, MAX_ASK, ZERO_ADDR, SupportedNetworks } from '../constants'
 import { sleep } from '../utils/others'
 import { toTokenAmount } from './math'
 const Promise = require('bluebird')
@@ -27,7 +27,10 @@ type entries = {
  * @return {Promise<Array<
  * >}
  */
-export async function getBasePairAskAndBids(oTokens: OToken[], networkId: 1 | 42): Promise<OTokenOrderBook[]> {
+export async function getBasePairAskAndBids(
+  oTokens: OToken[],
+  networkId: SupportedNetworks,
+): Promise<OTokenOrderBook[]> {
   const filteredOTokens = oTokens // await filter0xAvailablePairs(networkId, oTokens);
   // 0x has rate limit of 6 request / 10 sec, will need to chuck array into 6 each
   const BATCH_REQUEST = 6
@@ -150,7 +153,7 @@ export const getRemainingAmounts = (
  * get bids and asks for an oToken
  */
 export async function getOTokenUSDCOrderBook(
-  networkId: 1 | 42,
+  networkId: SupportedNetworks,
   oToken: string,
 ): Promise<{
   success: Boolean
@@ -214,7 +217,7 @@ export const getOrderFillRatio = (order: OrderWithMetaData) =>
  * @returns {OrderType}
  */
 export const categorizeOrder = (
-  networkId: 1 | 42,
+  networkId: SupportedNetworks,
   oTokens: string[],
   orderInfo: OrderWithMetaData,
 ): { type: OrderType; token: string } => {
@@ -236,7 +239,7 @@ export const categorizeOrder = (
  * @param {number} networkId
  * @param {SignedOrder[]} orders
  */
-export const broadcastOrders = async (networkId: 1 | 42, orders: SignedOrder[]) => {
+export const broadcastOrders = async (networkId: SupportedNetworks, orders: SignedOrder[]) => {
   const endpoint = ZeroXEndpoint[networkId].http
   const url = `${endpoint}sra/v4/orders`
   const res = await fetch(url, {

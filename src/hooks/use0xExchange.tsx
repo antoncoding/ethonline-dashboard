@@ -139,8 +139,6 @@ export function use0xExchange() {
       const feeInEth = getProtocolFee([order]).toString()
       const amountStr = amount.toString()
 
-      console.log(`order to fill`, order)
-
       await exchange.methods
         .fillLimitOrder(order, amountStr)
         .send({
