@@ -10,6 +10,7 @@ import WBTC from '../../imgs/WBTC.png'
 import oETH from '../../imgs/oETH.svg'
 import oBTC from '../../imgs/oBTC.png'
 import USDC from '../../imgs/USDC.png'
+import USDT from '../../imgs/USDT.png'
 import { simplifyOTokenSymbol } from '../../utils/others'
 
 type TokenAmountProps = {
@@ -26,6 +27,8 @@ export default function OpynTokenAmount({ token, amount, chainId }: TokenAmountP
       ? null
       : token.symbol === 'USDC'
       ? USDC
+      : token.symbol === 'USDT'
+      ? USDT
       : token.symbol === 'WETH'
       ? ETH
       : token.symbol === 'WBTC'

@@ -65,7 +65,6 @@ export function use0xExchange() {
       expiry: number,
       takerAddress?: string,
     ) => {
-      // const exchangeAddress = zx_exchange[networkId]
       const salt = new BigNumber(Date.now()).integerValue().toString()
       const taker = takerAddress ? takerAddress : '0x0000000000000000000000000000000000000000'
       const order = new v4orderUtils.LimitOrder({

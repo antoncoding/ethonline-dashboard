@@ -163,11 +163,6 @@ export const knownOperators: {
   ],
 }
 
-export const zx_exchange = {
-  '1': '0x61935cbdd02287b511119ddb11aeb42f1593b7ef',
-  '42': '0x4eacd0af335451709e1e7b570b8ea68edec8bc97',
-}
-
 export const getUSDC = (networkId: SupportedNetworks) => {
   return tokens[networkId].find(t => t.symbol === 'USDC') || eth
 }
