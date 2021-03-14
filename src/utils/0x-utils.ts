@@ -6,7 +6,16 @@ import {
   OTokenOrderBook,
   OTokenOrderBookWithDetail,
 } from '../types'
-import { ZeroXEndpoint, getUSDC, OrderType, Errors, MIN_BID, MAX_ASK, ZERO_ADDR, SupportedNetworks } from '../constants'
+import {
+  ZeroXEndpoint,
+  getPrimaryPaymentToken,
+  OrderType,
+  Errors,
+  MIN_BID,
+  MAX_ASK,
+  ZERO_ADDR,
+  SupportedNetworks,
+} from '../constants'
 import { sleep } from '../utils/others'
 import { toTokenAmount } from './math'
 const Promise = require('bluebird')
@@ -160,7 +169,7 @@ export async function getOTokenUSDCOrderBook(
   asks: OrderWithMetaData[]
   bids: OrderWithMetaData[]
 }> {
-  const quote = getUSDC(networkId).id
+  const quote = getPrimaryPaymentToken(networkId).id
   const endpoint = ZeroXEndpoint[networkId].http
   const url = `${endpoint}sra/v4/orderbook?baseToken=${oToken}&quoteToken=${quote}&perPage=${100}`
   try {
@@ -221,14 +230,14 @@ export const categorizeOrder = (
   oTokens: string[],
   orderInfo: OrderWithMetaData,
 ): { type: OrderType; token: string } => {
-  const usdc = getUSDC(networkId).id
+  const usd = getPrimaryPaymentToken(networkId).id
 
   const takerToken = orderInfo.order.takerToken
   const makerToken = orderInfo.order.makerToken
-  if (takerToken === usdc && oTokens.includes(makerToken)) {
+  if (takerToken === usd && oTokens.includes(makerToken)) {
     return { type: OrderType.ASK, token: makerToken }
   }
-  if (makerToken === usdc && oTokens.includes(takerToken)) {
+  if (makerToken === usd && oTokens.includes(takerToken)) {
     return { type: OrderType.BID, token: takerToken }
   }
   return { type: OrderType.NOT_OTOKEN, token: '' }

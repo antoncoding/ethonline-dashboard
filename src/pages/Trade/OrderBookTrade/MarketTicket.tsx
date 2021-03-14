@@ -9,7 +9,7 @@ import { toTokenAmount, fromTokenAmount } from '../../../utils/math'
 
 import { TradeAction, Errors, Spenders } from '../../../constants'
 import { useConnectedWallet } from '../../../contexts/wallet'
-import { getUSDC } from '../../../constants/addresses'
+import { getPrimaryPaymentToken } from '../../../constants/addresses'
 
 import OTokenIcon from '../../../components/OTokenIcon'
 import USDCImgUrl from '../../../imgs/USDC.png'
@@ -31,7 +31,7 @@ type MarketTicketProps = {
   action: TradeAction
   selectedOToken: SubgraphOToken
   oTokenBalances: OTokenBalance[] | null
-  usdcBalance: BigNumber
+  usdBalance: BigNumber
   wethBalance: BigNumber
   inputTokenAmount: BigNumber
   setInputTokenAmount: React.Dispatch<React.SetStateAction<BigNumber>>
@@ -43,7 +43,7 @@ export default function MarketTicket({
   action,
   selectedOToken,
   oTokenBalances,
-  usdcBalance,
+  usdBalance,
   // wethBalance,
   inputTokenAmount,
   setInputTokenAmount,
@@ -52,7 +52,7 @@ export default function MarketTicket({
 }: MarketTicketProps) {
   const { networkId } = useConnectedWallet()
 
-  const paymentToken = useMemo(() => getUSDC(networkId), [networkId])
+  const paymentToken = useMemo(() => getPrimaryPaymentToken(networkId), [networkId])
 
   const { fillOrders, getProtocolFee } = use0xExchange()
 
@@ -128,22 +128,6 @@ export default function MarketTicket({
   const protocolFee = useMemo(() => {
     return getProtocolFee(ordersToFill)
   }, [getProtocolFee, ordersToFill])
-
-  // const [isApprovingWeth, setIsApprovingWeth] = useState(false)
-  // const { allowance: wethAllowance, approve: approveWeth } = useUserAllowance(weth.id, Spenders.ZeroXStaking)
-  // const needApproveWeth = useMemo(() => payFeeWithWeth && toTokenAmount(wethAllowance, 18).lt(protocolFee), [
-  //   protocolFee,
-  //   wethAllowance,
-  //   payFeeWithWeth,
-  // ])
-
-  // const handleClickUnlockWeth = useCallback(async () => {
-  //   setIsApprovingWeth(true)
-  //   await approveWeth()
-  //   setIsApprovingWeth(false)
-  // }, [approveWeth])
-
-  // const hasEnoughWeth = useMemo(() => protocolFee.lte(toTokenAmount(wethBalance, 18)), [protocolFee, wethBalance])
 
   // when buy/sell is click, reset a few things
   useEffect(() => {
@@ -227,10 +211,10 @@ export default function MarketTicket({
 
   useEffect(() => {
     if (error !== Errors.NO_ERROR) return
-    const inputBalance = action === TradeAction.Buy ? usdcBalance : oTokenBalance
+    const inputBalance = action === TradeAction.Buy ? usdBalance : oTokenBalance
     const rawInputAmount = fromTokenAmount(inputTokenAmount, inputToken.decimals).integerValue()
     if (rawInputAmount.gt(inputBalance)) setError(Errors.INSUFFICIENT_BALANCE)
-  }, [usdcBalance, oTokenBalance, inputToken, inputTokenAmount, action, error])
+  }, [usdBalance, oTokenBalance, inputToken, inputTokenAmount, action, error])
 
   const fill = useCallback(async () => {
     await fillOrders(ordersToFill, amountsToFill)
@@ -289,8 +273,8 @@ export default function MarketTicket({
         symbol={simplifyOTokenSymbol(selectedOToken.symbol)}
       />
       <TokenBalanceEntry
-        label="USDC Balance"
-        amount={toTokenAmount(usdcBalance, paymentToken.decimals).toString()}
+        label="USD Balance"
+        amount={toTokenAmount(usdBalance, paymentToken.decimals).toString()}
         symbol={paymentToken.symbol}
       />
       <br />

@@ -2,7 +2,7 @@ import React, { useState, useMemo, useEffect, useCallback } from 'react'
 import { TextInput, Button, Timer, IconUnlock, LoadingRing } from '@aragon/ui'
 import BigNumber from 'bignumber.js'
 import { OTokenBalance, SignedOrder, SubgraphOToken, Token } from '../../../types'
-import { getUSDC, Errors, Spenders, ZERO_ADDR } from '../../../constants'
+import { getPrimaryPaymentToken, Errors, Spenders, ZERO_ADDR } from '../../../constants'
 
 import SectionHeader from '../../../components/SectionHeader'
 import LabelText from '../../../components/LabelText'
@@ -17,17 +17,16 @@ import { useCustomToast } from '../../../hooks'
 
 type TakerOrderProps = {
   oTokenBalances: OTokenBalance[] | null
-  usdcBalance: BigNumber
-  wethBalance: BigNumber
+  paymentTokenBalance: BigNumber
   allOtokens: SubgraphOToken[]
 }
 
-export default function TakerOrder({ oTokenBalances, wethBalance, usdcBalance, allOtokens }: TakerOrderProps) {
+export default function TakerOrder({ oTokenBalances, paymentTokenBalance, allOtokens }: TakerOrderProps) {
   const { getProtocolFee, fillOrder } = use0xExchange()
 
   const { networkId, user } = useConnectedWallet()
 
-  const usdc = useMemo(() => getUSDC(networkId), [networkId])
+  const paymentToken = useMemo(() => getPrimaryPaymentToken(networkId), [networkId])
 
   const toast = useCustomToast()
 
@@ -45,11 +44,11 @@ export default function TakerOrder({ oTokenBalances, wethBalance, usdcBalance, a
   const takerAssetBalance = useMemo(
     () =>
       takerAsset
-        ? takerAsset?.symbol === 'USDC'
-          ? usdcBalance
+        ? takerAsset?.symbol.includes('USD')
+          ? paymentTokenBalance
           : oTokenBalances?.find(b => b.token.id === takerAsset.id)?.balance || new BigNumber(0)
         : new BigNumber(0),
-    [takerAsset, usdcBalance, oTokenBalances],
+    [takerAsset, paymentTokenBalance, oTokenBalances],
   )
 
   const balanceError = order
@@ -64,21 +63,21 @@ export default function TakerOrder({ oTokenBalances, wethBalance, usdcBalance, a
       const order: SignedOrder = JSON.parse(new Buffer(encodedOrder, 'base64').toString(''))
       setOrder(order)
       // asset is either oToken or usdc
-      const makerAsset = allOtokens.find(t => t.id === order.makerToken) || usdc
-      const takerAsset = allOtokens.find(t => t.id === order.takerToken) || usdc
+      const makerAsset = allOtokens.find(t => t.id === order.makerToken) || paymentToken
+      const takerAsset = allOtokens.find(t => t.id === order.takerToken) || paymentToken
       setMakerAsset(makerAsset)
       setTakerAsset(takerAsset)
     } catch (error) {
       toast.error('Decode order failed')
     }
-  }, [encodedOrder, allOtokens, usdcBalance, usdc, toast])
+  }, [encodedOrder, allOtokens, paymentTokenBalance, paymentToken, toast])
 
   // denominated in eth
   const protocolFee = useMemo(() => (order ? getProtocolFee([order]) : new BigNumber(0)), [getProtocolFee, order])
   // const hasEnoughWeth = useMemo(() => wethBalance.gt(fromTokenAmount(protocolFee, 18)), [protocolFee, wethBalance])
 
   // get taker asset allowance
-  const { approve, allowance } = useUserAllowance(takerAsset?.id || usdc.id, Spenders.ZeroXExchange)
+  const { approve, allowance } = useUserAllowance(takerAsset?.id || paymentToken.id, Spenders.ZeroXExchange)
 
   const needApprove = useMemo(() => (order ? new BigNumber(order.takerAmount).gt(allowance) : false), [
     order,
@@ -119,13 +118,13 @@ export default function TakerOrder({ oTokenBalances, wethBalance, usdcBalance, a
           <SectionHeader title="Detail" />
 
           <TokenBalanceEntry
-            label="Maker Asset"
+            label="I Get"
             amount={toTokenAmount(order.makerAmount, makerAsset?.decimals || 8).toString()}
             symbol={makerAsset?.symbol || ''}
           />
 
           <TokenBalanceEntry
-            label="Taker Asset"
+            label="I Pay"
             amount={toTokenAmount(order.takerAmount, takerAsset?.decimals || 8).toString()}
             symbol={takerAsset?.symbol || ''}
           />
@@ -151,7 +150,7 @@ export default function TakerOrder({ oTokenBalances, wethBalance, usdcBalance, a
             <Button
               disabled={balanceError !== Errors.NO_ERROR || needApprove || !takable}
               mode="strong"
-              label="Fill order"
+              label="Complete Trade"
               onClick={handleFillOrder}
             />
 

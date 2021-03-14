@@ -9,7 +9,7 @@ import LimitTicket from './LimitTicket'
 import { SubgraphOToken } from '../../../types'
 import { simplifyOTokenSymbol } from '../../../utils/others'
 
-import { TradeAction, MarketTypes, getUSDC, getWeth } from '../../../constants'
+import { TradeAction, MarketTypes, getWeth, getPrimaryPaymentToken } from '../../../constants'
 import { useOTokenBalances, useTokenBalance } from '../../../hooks'
 import { useConnectedWallet } from '../../../contexts/wallet'
 
@@ -30,7 +30,7 @@ export default function TradePanel({ selectedOToken, action, setAction, compact 
   const [outputTokenAmount, setOutputTokenAmount] = useState(new BigNumber(0))
 
   const { balances: oTokenBalances } = useOTokenBalances(user, networkId)
-  const usdcBalance = useTokenBalance(getUSDC(networkId).id, user, 15)
+  const usdBalance = useTokenBalance(getPrimaryPaymentToken(networkId).id, user, 15)
   const wethBalance = useTokenBalance(getWeth(networkId).id, user, 15)
 
   const titleText = useMemo(
@@ -61,7 +61,7 @@ export default function TradePanel({ selectedOToken, action, setAction, compact 
               action={action}
               selectedOToken={selectedOToken}
               oTokenBalances={oTokenBalances}
-              usdcBalance={usdcBalance}
+              usdBalance={usdBalance}
               wethBalance={wethBalance}
             />
           ) : (
@@ -73,7 +73,7 @@ export default function TradePanel({ selectedOToken, action, setAction, compact 
               action={action}
               selectedOToken={selectedOToken}
               oTokenBalances={oTokenBalances}
-              usdcBalance={usdcBalance}
+              usdBalance={usdBalance}
             />
           )}
         </Col>

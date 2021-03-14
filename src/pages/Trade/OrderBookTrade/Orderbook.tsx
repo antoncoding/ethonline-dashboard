@@ -7,7 +7,7 @@ import { getAskPrice, getBidPrice, getRemainingAmounts } from '../../../utils/0x
 import { green, red } from './StyleDiv'
 import { toTokenAmount } from '../../../utils/math'
 import { generateNoOrderContent, NO_TOKEN_SELECTED } from '../../../constants/dataviewContents'
-import { TradeAction, getUSDC } from '../../../constants'
+import { TradeAction, getPrimaryPaymentToken } from '../../../constants'
 import { simplifyOTokenSymbol } from '../../../utils/others'
 import { useConnectedWallet } from '../../../contexts/wallet'
 
@@ -36,23 +36,23 @@ export default function Orderbook({ selectedOToken, action }: OrderbookProps) {
     }
   }, [selectedOToken, orderbooks])
 
-  const usdc = useMemo(() => getUSDC(networkId), [networkId])
+  const paymentToken = useMemo(() => getPrimaryPaymentToken(networkId), [networkId])
 
   const renderRow = useCallback(
     (order: OrderWithMetaData) => {
-      const isBid = usdc.id === order.order.makerToken
+      const isBid = paymentToken.id === order.order.makerToken
 
       const remainingAmounts = isBid
         ? toTokenAmount(order.metaData.remainingFillableTakerAmount, 8).toFixed(2)
         : toTokenAmount(getRemainingAmounts(order).remainingMakerAssetAmount, 8).toFixed(2)
 
       const price = isBid
-        ? green(getBidPrice(order.order, 6, 8).toFixed(4))
-        : red(getAskPrice(order.order, 8, 6).toFixed(4))
+        ? green(getBidPrice(order.order, paymentToken.decimals, 8).toFixed(4))
+        : red(getAskPrice(order.order, 8, paymentToken.decimals).toFixed(4))
 
       return [price, remainingAmounts, <Timer format="ms" showIcon end={new Date(Number(order.order.expiry) * 1000)} />]
     },
-    [usdc],
+    [paymentToken],
   )
 
   const allEntries = useMemo(() => {

@@ -8,7 +8,7 @@ import { toTokenAmount } from '../../../utils/math'
 import { NO_TOKEN_SELECTED, generateNoUserOrderContent } from '../../../constants/dataviewContents'
 import { simplifyOTokenSymbol } from '../../../utils/others'
 import { useConnectedWallet } from '../../../contexts/wallet'
-import { getUSDC } from '../../../constants'
+import { getPrimaryPaymentToken } from '../../../constants'
 import { use0xExchange } from '../../../hooks/use0xExchange'
 import { useCustomToast } from '../../../hooks'
 import BigNumber from 'bignumber.js'
@@ -27,7 +27,7 @@ export default function UserOrders({ selectedOToken }: OrderbookProps) {
 
   const { user, networkId } = useConnectedWallet()
 
-  const usdc = useMemo(() => getUSDC(networkId), [networkId])
+  const usd = useMemo(() => getPrimaryPaymentToken(networkId), [networkId])
 
   const [entries, setEntries] = useState<OrderWithMetaData[]>([])
 
@@ -42,7 +42,7 @@ export default function UserOrders({ selectedOToken }: OrderbookProps) {
 
   const renderRow = useCallback(
     (order: OrderWithMetaData) => {
-      const isBid = order.order.makerToken === usdc.id
+      const isBid = order.order.makerToken === usd.id
 
       const remainingPercentage = new BigNumber(order.metaData.remainingFillableTakerAmount)
         .div(order.order.takerAmount)
@@ -57,7 +57,7 @@ export default function UserOrders({ selectedOToken }: OrderbookProps) {
             : `${amonutLeft.toFixed(2)} (${remainingPercentage * 100} %)`
         // bid
         return [
-          green(getBidPrice(order.order, 6, 8).toFixed(2)),
+          green(getBidPrice(order.order, usd.decimals, 8).toFixed(2)),
           amountShown,
           <Timer format="ms" showIcon end={new Date(Number(order.order.expiry) * 1000)} />,
         ]
@@ -68,13 +68,13 @@ export default function UserOrders({ selectedOToken }: OrderbookProps) {
             ? amonutLeft.toFixed(2)
             : `${amonutLeft.toFixed(2)} (${remainingPercentage * 100} %)`
         return [
-          red(getAskPrice(order.order, 8, 6).toFixed(2)),
+          red(getAskPrice(order.order, 8, usd.decimals).toFixed(2)),
           amountShown,
           <Timer format="ms" showIcon end={new Date(Number(order.order.expiry) * 1000)} />,
         ]
       }
     },
-    [usdc.id],
+    [usd.id, usd.decimals],
   )
 
   const onSelectEntries = useCallback((entries, indexes) => {

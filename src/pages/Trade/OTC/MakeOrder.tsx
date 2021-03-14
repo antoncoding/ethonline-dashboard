@@ -10,11 +10,11 @@ import MakeOrderDetail from './MakeOrderDetail'
 
 type MakeOrderProps = {
   oTokenBalances: OTokenBalance[] | null
-  usdcBalance: BigNumber
+  paymentTokenBalance: BigNumber
   allOtokens: SubgraphOToken[]
 }
 
-export default function MakeOrder({ oTokenBalances, usdcBalance, allOtokens }: MakeOrderProps) {
+export default function MakeOrder({ oTokenBalances, paymentTokenBalance, allOtokens }: MakeOrderProps) {
   const [selectedOToken, setSelectedOToken] = useState<null | SubgraphOToken>(null)
 
   const oTokenBalance = selectedOToken
@@ -34,7 +34,11 @@ export default function MakeOrder({ oTokenBalances, usdcBalance, allOtokens }: M
         </Col>
       </Row>
       {selectedOToken && (
-        <MakeOrderDetail selectedOToken={selectedOToken} usdcBalance={usdcBalance} oTokenBalance={oTokenBalance} />
+        <MakeOrderDetail
+          selectedOToken={selectedOToken}
+          paymentTokenBalance={paymentTokenBalance}
+          oTokenBalance={oTokenBalance}
+        />
       )}
     </>
   )

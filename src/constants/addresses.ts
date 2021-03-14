@@ -1,7 +1,7 @@
 import { SupportedNetworks } from './networks'
 import { Token } from '../types/index'
 
-type TokensTyps = {
+type TokensTypes = {
   [key in SupportedNetworks]: Token[]
 }
 
@@ -15,7 +15,7 @@ export const eth: Token = {
   decimals: 18,
 }
 
-export const tokens: TokensTyps = {
+export const tokens: TokensTypes = {
   '1': [
     eth,
     {
@@ -105,7 +105,7 @@ export const addresses: SystemAddresses = {
     addressBook: '0xe71417eefc794c9b83fc494861981721e26db0e9',
     pool: '0x3C325EeBB64495665F5376930d30151C1075bFD8',
     whitelist: '0x5faCA6DF39c897802d752DfCb8c02Ea6959245Fc',
-    zeroxExchange: '0xfb2dd2a1366de37f7241c83d47da58fd503e2c64', // v3
+    zeroxExchange: '0xdef1c0ded9bec7f1a1670819833240f027b25eff', // v4
   },
   '42': {
     controller: isPublic ? '0xdee7d0f8ccc0f7ac7e45af454e5e7ec1552e8e4e' : '0xa84cff11957a0a08a3e1d568ed1caaf47626c1f3',
@@ -161,6 +161,11 @@ export const knownOperators: {
       author: 'Opyn',
     },
   ],
+}
+
+export const getPrimaryPaymentToken = (networkId: SupportedNetworks) => {
+  if (networkId === SupportedNetworks.Ropsten) return tokens[networkId].find(t => t.symbol === 'USDT') as Token
+  else return tokens[networkId].find(t => t.symbol === 'USDC') as Token
 }
 
 export const getUSDC = (networkId: SupportedNetworks) => {

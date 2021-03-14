@@ -17,7 +17,7 @@ import { toTokenAmount, fromTokenAmount } from '../../../utils/math'
 
 import { TradeAction, Errors, DeadlineUnit, Spenders } from '../../../constants'
 import { useConnectedWallet } from '../../../contexts/wallet'
-import { getUSDC, ZERO_ADDR } from '../../../constants/addresses'
+import { getPrimaryPaymentToken, ZERO_ADDR } from '../../../constants/addresses'
 
 import OTokenIcon from '../../../components/OTokenIcon'
 import USDCIcon from '../../../imgs/USDC.png'
@@ -36,10 +36,10 @@ import { useCustomToast } from '../../../hooks'
 type TradeDetailProps = {
   oTokenBalance: BigNumber
   selectedOToken: SubgraphOToken
-  usdcBalance: BigNumber
+  paymentTokenBalance: BigNumber
 }
 
-export default function MakeOrderDetail({ selectedOToken, usdcBalance, oTokenBalance }: TradeDetailProps) {
+export default function MakeOrderDetail({ selectedOToken, paymentTokenBalance, oTokenBalance }: TradeDetailProps) {
   const { networkId } = useConnectedWallet()
   const toast = useCustomToast()
   const [action, setAction] = useState<TradeAction>(TradeAction.Buy)
@@ -52,7 +52,7 @@ export default function MakeOrderDetail({ selectedOToken, usdcBalance, oTokenBal
   const [isApprovingUSDC, setIsApprovingUSDC] = useState(false)
   const [isApprovingOToken, setIsApprovingOToken] = useState(false)
 
-  const paymentToken = useMemo(() => getUSDC(networkId), [networkId])
+  const paymentToken = useMemo(() => getPrimaryPaymentToken(networkId), [networkId])
 
   const { createOrder } = use0xExchange()
 
@@ -76,15 +76,15 @@ export default function MakeOrderDetail({ selectedOToken, usdcBalance, oTokenBal
     action,
   ])
 
-  const inputTokenBalance = useMemo(() => (action === TradeAction.Buy ? usdcBalance : oTokenBalance), [
+  const inputTokenBalance = useMemo(() => (action === TradeAction.Buy ? paymentTokenBalance : oTokenBalance), [
     action,
-    usdcBalance,
+    paymentTokenBalance,
     oTokenBalance,
   ])
-  const outputTokenBalance = useMemo(() => (action === TradeAction.Buy ? oTokenBalance : usdcBalance), [
+  const outputTokenBalance = useMemo(() => (action === TradeAction.Buy ? oTokenBalance : paymentTokenBalance), [
     action,
     oTokenBalance,
-    usdcBalance,
+    paymentTokenBalance,
   ])
 
   const [needApproveInputToken, setNeedApprove] = useState(true)
@@ -171,18 +171,11 @@ export default function MakeOrderDetail({ selectedOToken, usdcBalance, oTokenBal
   // check balance error
   useEffect(() => {
     // if (error !== Errors.NO_ERROR || error !== Errors.INSUFFICIENT_BALANCE) return
-    const inputBalance = action === TradeAction.Buy ? usdcBalance : oTokenBalance
+    const inputBalance = action === TradeAction.Buy ? paymentTokenBalance : oTokenBalance
     const rawInputAmount = fromTokenAmount(inputTokenAmount, inputToken.decimals).integerValue()
     if (rawInputAmount.gt(inputBalance)) setError(Errors.INSUFFICIENT_BALANCE)
     else if (error === Errors.INSUFFICIENT_BALANCE) setError(Errors.NO_ERROR)
-  }, [usdcBalance, oTokenBalance, inputToken, inputTokenAmount, action, error])
-
-  // if action === buy, this will always be false
-  // const needApproveUSDCForFee = useMemo(() => (action === TradeAction.Sell ? makerFee.gt(usdcAllowance) : false), [
-  //   makerFee,
-  //   usdcAllowance,
-  //   action,
-  // ])
+  }, [paymentTokenBalance, oTokenBalance, inputToken, inputTokenAmount, action, error])
 
   // check has enough input allowance
   useEffect(() => {
@@ -302,7 +295,7 @@ export default function MakeOrderDetail({ selectedOToken, usdcBalance, oTokenBal
       </Row>
 
       <SectionHeader title="Detail" />
-      <TokenBalanceEntry label="Price" amount={price.toFixed(4)} symbol="USDC / oToken" />
+      <TokenBalanceEntry label="Price" amount={price.toFixed(4)} symbol={`${paymentToken.symbol} / oToken`} />
       <TokenBalanceEntry label="Maker Fee" amount={'0'} symbol={paymentToken.symbol} />
 
       <div style={{ display: 'flex' }}>

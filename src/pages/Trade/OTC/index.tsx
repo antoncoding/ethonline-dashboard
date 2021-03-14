@@ -5,7 +5,7 @@ import { Header, Tabs } from '@aragon/ui'
 
 import { useConnectedWallet } from '../../../contexts/wallet'
 import { useOTokenBalances, useTokenBalance, useLiveOTokens } from '../../../hooks'
-import { getUSDC, getWeth } from '../../../constants'
+import { getPrimaryPaymentToken } from '../../../constants'
 
 import MakeOrder from './MakeOrder'
 import TakerOrder from './TakeOrder'
@@ -18,8 +18,8 @@ export default function OTC() {
   const { user, networkId } = useConnectedWallet()
 
   const { balances: oTokenBalances } = useOTokenBalances(user, networkId)
-  const usdcBalance = useTokenBalance(getUSDC(networkId).id, user, 15)
-  const wethBalance = useTokenBalance(getWeth(networkId).id, user, 15)
+  const paymentTokenBalance = useTokenBalance(getPrimaryPaymentToken(networkId).id, user, 15)
+
   const { allOtokens } = useLiveOTokens()
 
   const [selectedTab, setSelectedTab] = useState(0)
@@ -35,15 +35,10 @@ export default function OTC() {
       </Row>
 
       {selectedTab === 0 && (
-        <MakeOrder allOtokens={allOtokens} usdcBalance={usdcBalance} oTokenBalances={oTokenBalances} />
+        <MakeOrder allOtokens={allOtokens} paymentTokenBalance={paymentTokenBalance} oTokenBalances={oTokenBalances} />
       )}
       {selectedTab === 1 && (
-        <TakerOrder
-          wethBalance={wethBalance}
-          usdcBalance={usdcBalance}
-          oTokenBalances={oTokenBalances}
-          allOtokens={allOtokens}
-        />
+        <TakerOrder paymentTokenBalance={paymentTokenBalance} oTokenBalances={oTokenBalances} allOtokens={allOtokens} />
       )}
     </>
   )

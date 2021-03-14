@@ -81,7 +81,7 @@ export function use0xExchange() {
         // pool:
         expiry: new BigNumber(expiry).integerValue(),
         salt,
-        // verifyingContract
+        verifyingContract: addresses[networkId].zeroxExchange,
       })
       track('create-order')
       const signature = await order.getSignatureWithProviderAsync(
@@ -138,8 +138,10 @@ export function use0xExchange() {
       const feeInEth = getProtocolFee([order]).toString()
       const amountStr = amount.toString()
 
+      console.log(`order`, order)
+
       await exchange.methods
-        .fillLimitOrder(order, amountStr)
+        .fillLimitOrder(order, order.signature, amountStr)
         .send({
           from: user,
           value: web3.utils.toWei(feeInEth, 'ether'),
