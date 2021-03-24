@@ -77,6 +77,30 @@ export const tokens: TokensTypes = {
       canMint: true,
     },
   ],
+  '212984383488152': [
+    // same address with kovan
+    eth,
+    {
+      name: 'USDC',
+      id: '0xf5cb5408b40e819e7db5347664be03b52accac9d',
+      symbol: 'USDC',
+      decimals: 6,
+      canMint: true,
+    },
+    {
+      name: 'Wrapped Ether',
+      id: '0xd0a1e359811322d97991e03f863a0c30c2cf029c',
+      symbol: 'WETH',
+      decimals: 18,
+    },
+    {
+      name: 'Wrapped Bitcoin',
+      id: '0xd7c8c2f7b6ebdbc88e5ab0101dd24ed5aca58b0f',
+      symbol: 'WBTC',
+      decimals: 8,
+      canMint: true,
+    },
+  ],
 }
 
 type SystemAddresses = {
@@ -115,12 +139,23 @@ export const addresses: SystemAddresses = {
     whitelist: isPublic ? '0x9164eB40a1b59512F1803aB4C2d1dE4B89627A93' : '0xc990BB199c0ed8CEE305bD1A4c50A87029AdfAE3',
     zeroxExchange: '0x4eacd0af335451709e1e7b570b8ea68edec8bc97',
   },
+  '212984383488152': {
+    controller: '0x4C8696De199F6e1C069e147382D500C6F04A0374',
+    factory: '0x0D963D4DfF92fbeC2897B2Fe38DF74835e36513F',
+    addressBook: '0xb9DBed1792e6450015F7ea9fbaB2BAD799638404',
+    pool: '0xa5c2aC879cC605045fb2e702555dEFdDecCc3B3c',
+    whitelist: '0xb20Df1356F2ffE9F3ba9b0Ce91C172454FEa6CE1',
+    zeroxExchange: '0x4eacd0af335451709e1e7b570b8ea68edec8bc97',
+    zeroxERCProxy: '0xf1ec01d6236d3cd881a0bf0130ea25fe4234003e',
+    zeroxStaking: '0xbab9145f1d57cd4bb0c9aa2d1ece0a5b6e734d34',
+  },
 }
 
 export const blacklistOTokens = {
   '1': [ZERO_ADDR],
   '3': [ZERO_ADDR],
   '42': [ZERO_ADDR],
+  '212984383488152': [ZERO_ADDR],
 }
 
 type KnownOperator = {
@@ -161,10 +196,18 @@ export const knownOperators: {
       author: 'Opyn',
     },
   ],
+  '212984383488152': [],
 }
 
 export const getPrimaryPaymentToken = (networkId: SupportedNetworks) => {
   return tokens[networkId].find(t => t.symbol === 'USDC') as Token
+}
+
+export const zx_exchange = {
+  '1': '0x61935cbdd02287b511119ddb11aeb42f1593b7ef',
+  '3': '0xdef1c0ded9bec7f1a1670819833240f027b25eff',
+  '42': '0x4eacd0af335451709e1e7b570b8ea68edec8bc97',
+  '212984383488152': '0x4eacd0af335451709e1e7b570b8ea68edec8bc97', // wont work
 }
 
 export const getUSDC = (networkId: SupportedNetworks) => {

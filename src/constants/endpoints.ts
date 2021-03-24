@@ -14,6 +14,7 @@ export const subgraph: graphEndPointType = {
   '42': isPublic
     ? 'https://api.thegraph.com/subgraphs/name/opynfinance/gamma-kovan'
     : 'https://api.thegraph.com/subgraphs/name/opynfinance/gamma-internal-kovan',
+  '212984383488152': 'http://localhost:8000',
 }
 
 export const ZeroXEndpoint: { [key in SupportedNetworks]: { http: string; ws: string } } = {
@@ -28,5 +29,9 @@ export const ZeroXEndpoint: { [key in SupportedNetworks]: { http: string; ws: st
   42: {
     http: 'https://kovan.api.0x.org/',
     ws: 'wss://kovan.api.0x.org/sra/v4',
+  },
+  212984383488152: {
+    http: 'https://kovan.api.0x.org/',
+    ws: 'wss://kovan.api.0x.org/sra/v3',
   },
 }

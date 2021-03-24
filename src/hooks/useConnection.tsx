@@ -86,7 +86,10 @@ export const useConnection = () => {
 
 export const initOnboard = (addressChangeCallback, walletChangeCallback, networkChangeCallback, networkId) => {
   const networkname = networkId === 1 ? 'mainnet' : networkId === 3 ? 'ropsten' : 'kovan'
-  const RPC_URL = `https://${networkname}.infura.io/v3/${INFURA_KEY}`
+  const RPC_URL =
+    networkId === SupportedNetworks.Arbitrum
+      ? 'https://kovan4.arbitrum.io/rpc'
+      : `https://${networkname}.infura.io/v3/${INFURA_KEY}`
   const onboard = Onboard({
     darkMode: getPreference('theme', 'light') === 'dark',
     dappId: BLOCKNATIVE_KEY, // [String] The API key created by step one above
@@ -109,6 +112,7 @@ export const initOnboard = (addressChangeCallback, walletChangeCallback, network
             ['3']: RPC_URL,
             // eslint-disable-next-line
             ['42']: RPC_URL,
+            '0x4eacd0af335451709e1e7b570b8ea68edec8bc97': RPC_URL,
           }, // [Optional]
           preferred: true,
         },
