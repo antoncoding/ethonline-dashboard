@@ -22,6 +22,8 @@ export default function TradeHeadBar({ underlying, spotPrice, setOTokens, setSel
 
   const series = useMemo(() => (allSeries.length === 0 ? null : allSeries[seriesId]), [allSeries, seriesId])
 
+  console.log(`series`, series)
+
   useEffect(() => {
     if (series !== null) setSelectedUnderlying({ ...series.underlying, id: series.underlying.id })
   }, [series, setSelectedUnderlying])

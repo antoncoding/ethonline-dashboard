@@ -35,7 +35,7 @@ export const tokens: TokensTypes = {
     eth,
     {
       name: 'Opyn USDC',
-      id: '0x8bE3A2a5C37b16c6EAa2bE6A3FA1cf1E465f8691',
+      id: '0x8be3a2a5c37b16c6eaa2be6a3fa1cf1e465f8691',
       symbol: 'USDC',
       decimals: 6,
       canMint: true,
@@ -48,7 +48,7 @@ export const tokens: TokensTypes = {
     },
     {
       name: 'Opyn Wrapped Bitcoin',
-      id: '0x6b8BAF03CB00f8F1FA94999B71047FEa06f7251a',
+      id: '0x6b8baf03cb00f8f1fa94999b71047fea06f7251a',
       symbol: 'WBTC',
       decimals: 8,
       canMint: true,
@@ -164,8 +164,7 @@ export const knownOperators: {
 }
 
 export const getPrimaryPaymentToken = (networkId: SupportedNetworks) => {
-  if (networkId === SupportedNetworks.Ropsten) return tokens[networkId].find(t => t.symbol === 'USDT') as Token
-  else return tokens[networkId].find(t => t.symbol === 'USDC') as Token
+  return tokens[networkId].find(t => t.symbol === 'USDC') as Token
 }
 
 export const getUSDC = (networkId: SupportedNetworks) => {

@@ -61,7 +61,7 @@ function CustomIdentityBadge({ entity, connectedAccount, label, shorten }: Custo
   return (
     <>
       <IdentityBadge
-        networkType={networkId === 1 ? 'main' : networkId === 4 ? 'rinkeby' : 'kovan'}
+        networkType={networkId === 1 ? 'main' : networkId === 3 ? 'ropsten' : 'kovan'}
         entity={entity}
         connectedAccount={connectedAccount}
         label={displayLabel}

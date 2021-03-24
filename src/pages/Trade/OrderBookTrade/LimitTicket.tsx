@@ -46,8 +46,6 @@ export default function LimitTicket({
 
   const paymentToken = useMemo(() => getPrimaryPaymentToken(networkId), [networkId])
 
-  console.log(`paymentToken`, paymentToken)
-
   const { createOrder, broadcastOrder } = use0xExchange()
 
   const [deadline, setDeadline] = useState<number>(20)

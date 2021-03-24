@@ -50,7 +50,7 @@ export function useOTokenInSeries(underlying: string | undefined, strike: string
       }
     },
     [],
-    [networkId, toast],
+    [networkId, toast, underlying, strike],
   )
 
   return { isLoading, allOtokens }
