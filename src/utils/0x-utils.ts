@@ -169,6 +169,14 @@ export async function getOTokenUSDCOrderBook(
   asks: OrderWithMetaData[]
   bids: OrderWithMetaData[]
 }> {
+  // skip request for kovan.
+  if (networkId === SupportedNetworks.Kovan) {
+    return {
+      success: false,
+      asks: [],
+      bids: [],
+    }
+  }
   const quote = getPrimaryPaymentToken(networkId).id
   const endpoint = ZeroXEndpoint[networkId].http
   const url = `${endpoint}sra/v4/orderbook?baseToken=${oToken}&quoteToken=${quote}&perPage=${100}`

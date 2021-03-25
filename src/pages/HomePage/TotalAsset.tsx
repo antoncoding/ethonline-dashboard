@@ -59,13 +59,16 @@ export default function TotalAsset() {
           const token = new web3.eth.Contract(erc20Abi, collateral.id)
           const whitelistContract = new web3.eth.Contract(whitelistAbi, addresses[networkId].whitelist)
           const isWhitelisted = await whitelistContract.methods.isWhitelistedCollateral(collateral.id).call()
-          const price = collateral.symbol.includes('USD') ? new BigNumber(1) : await getTokenPriceCoingecko(collateral.id)
+          const price = collateral.symbol.includes('USD')
+            ? new BigNumber(1)
+            : await getTokenPriceCoingecko(collateral.id)
           const rawBalance: string = await token.methods.balanceOf(poolAddress).call()
 
           const balance = toTokenAmount(rawBalance, collateral.decimals)
           return { token: collateral, balance, price, isWhitelisted }
         }),
       )
+
       setAssetBalances(
         balances
           .filter(b => b.isWhitelisted)
@@ -73,6 +76,10 @@ export default function TotalAsset() {
             const target = prev.find(entry => entry.token.symbol === curr.token.symbol)
             if (target !== undefined) {
               target.balance = target.balance.plus(curr.balance)
+              //
+              if (target.price.isZero() && !curr.price.isZero()) {
+                target.price = curr.price
+              }
               return [...prev]
             } else {
               return [...prev, curr]
