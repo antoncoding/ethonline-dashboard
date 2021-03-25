@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { Info } from '@aragon/ui'
 import ReactGA from 'react-ga'
 import { Col, Row } from 'react-grid-system'
 import TradeHeader from './Header'
@@ -11,10 +12,11 @@ import PriceChart from './PriceChart'
 
 import CheckBoxWithLabel from '../../../components/CheckBoxWithLabel'
 import { SubgraphOToken } from '../../../types'
-import { TradeAction, SHOW_MINE_KEY } from '../../../constants'
+import { TradeAction, SHOW_MINE_KEY, SupportedNetworks } from '../../../constants'
 import { useTokenPrice } from '../../../hooks'
 import { eth } from '../../../constants/addresses'
 import { getPreference } from '../../../utils/storage'
+import { useConnectedWallet } from '../../../contexts/wallet'
 
 export default function TradePage() {
   useEffect(() => {
@@ -26,12 +28,14 @@ export default function TradePage() {
   const [action, setAction] = useState<TradeAction>(TradeAction.Buy)
 
   const [showMyOrder, setShowMyOrder] = useState(getPreference(SHOW_MINE_KEY, 'false') === 'true')
-
+  const { networkId } = useConnectedWallet()
   const [mintPanelOpened, setMintPanelOpened] = useState(false)
 
   const spotPrice = useTokenPrice(selectedUnderlying.id, 10)
 
-  return (
+  return networkId === SupportedNetworks.Kovan ? (
+    <Info mode="error"> 0x V4 doesn't support kovan testnet, please switch network to Ropsten </Info>
+  ) : (
     <>
       <TradeHeader
         underlying={selectedUnderlying}

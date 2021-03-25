@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import { Col, Row } from 'react-grid-system'
 import ReactGA from 'react-ga'
-import { Header, Tabs } from '@aragon/ui'
+import { Header, Tabs, Info } from '@aragon/ui'
 
 import { useConnectedWallet } from '../../../contexts/wallet'
 import { useOTokenBalances, useTokenBalance, useLiveOTokens } from '../../../hooks'
-import { getPrimaryPaymentToken } from '../../../constants'
+import { getPrimaryPaymentToken, SupportedNetworks } from '../../../constants'
 
 import MakeOrder from './MakeOrder'
 import TakerOrder from './TakeOrder'
@@ -24,7 +24,9 @@ export default function OTC() {
 
   const [selectedTab, setSelectedTab] = useState(0)
 
-  return (
+  return networkId === SupportedNetworks.Kovan ? (
+    <Info mode="error"> 0x V4 doesn't support kovan testnet, please switch network to Ropsten </Info>
+  ) : (
     <>
       <Header primary={'OTC'} />
 

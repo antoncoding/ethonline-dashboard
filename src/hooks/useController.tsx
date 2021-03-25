@@ -26,7 +26,7 @@ export function useController() {
 
   const track = useCallback(
     (action: string) => {
-      const label = networkId === SupportedNetworks.Mainnet ? 'mainnet' : 'kovan'
+      const label = networkId === SupportedNetworks.Mainnet ? 'mainnet' : 'testnet'
       ReactGA.event({ category: 'controller', action, label })
     },
     [networkId],

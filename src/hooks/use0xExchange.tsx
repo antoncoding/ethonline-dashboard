@@ -25,7 +25,7 @@ export function use0xExchange() {
 
   const track = useCallback(
     (action: string) => {
-      const label = networkId === SupportedNetworks.Mainnet ? 'mainnet' : 'kovan'
+      const label = networkId === SupportedNetworks.Mainnet ? 'mainnet' : 'testnet'
       ReactGA.event({ category: 'trading', action, label })
     },
     [networkId],
@@ -81,7 +81,7 @@ export function use0xExchange() {
         // pool:
         expiry: new BigNumber(expiry).integerValue(),
         salt,
-        verifyingContract: addresses[networkId].zeroxExchange,
+        // verifyingContract: addresses[networkId].zeroxExchange,
       })
       track('create-order')
       const signature = await order.getSignatureWithProviderAsync(

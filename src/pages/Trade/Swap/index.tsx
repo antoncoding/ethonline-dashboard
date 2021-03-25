@@ -2,19 +2,22 @@ import React, { useState, useEffect } from 'react'
 import { useHistory, useParams } from 'react-router-dom'
 import { Col, Row } from 'react-grid-system'
 import ReactGA from 'react-ga'
-import { Header, SyncIndicator } from '@aragon/ui'
+import { Header, SyncIndicator, Info } from '@aragon/ui'
 import TradePanel from '../OrderBookTrade/TradePanel'
 
-import { TradeAction } from '../../../constants'
+import { TradeAction, SupportedNetworks } from '../../../constants'
 import { useLiveOTokens } from '../../../hooks'
 import { SubgraphOToken } from '../../../types'
 import { useOrderbook } from '../../../contexts/orderbook'
 import OTokenAutoComplete from '../../../components/OTokenAutoComplete'
+import { useConnectedWallet } from '../../../contexts/wallet'
 
 export default function Swap() {
   useEffect(() => {
     ReactGA.pageview('trade/swap/')
   }, [])
+
+  const { networkId } = useConnectedWallet()
 
   const history = useHistory()
 
@@ -37,7 +40,9 @@ export default function Swap() {
 
   const { isLoading: loadingOrderbook } = useOrderbook()
 
-  return (
+  return networkId === SupportedNetworks.Kovan ? (
+    <Info mode="error"> 0x V4 doesn't support kovan testnet, please switch network to Ropsten </Info>
+  ) : (
     <>
       <Header primary={'Swap'} />
       <Row>
