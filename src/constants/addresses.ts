@@ -210,5 +210,5 @@ export const getWeth = (networkId: SupportedNetworks) => {
 }
 
 export const getPayableProxyAddr = (networkId: SupportedNetworks) => {
-  return knownOperators[networkId].find(o => o.name === 'PayableProxy') as KnownOperator
+  return knownOperators[networkId].find(o => o.name === 'PayableProxy')
 }

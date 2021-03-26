@@ -44,8 +44,9 @@ export function useController() {
   }, [networkId, web3])
 
   const payableProxy = useMemo(() => {
-    const address = getPayableProxyAddr(networkId).address
-    return new web3.eth.Contract(payableProxyAbi, address)
+    const proxy = getPayableProxyAddr(networkId)
+    if (!proxy) return null
+    return new web3.eth.Contract(payableProxyAbi, proxy.address)
   }, [networkId, web3])
 
   const updateVaultId = useCallback(() => {
@@ -84,7 +85,9 @@ export function useController() {
   const pushAddCollateralArg = useCallback(
     (account: string, vaultId: BigNumber, from: string, asset: string, amount: BigNumber) => {
       let finalAsset = asset
-      if (from === getPayableProxyAddr(networkId).address) {
+      const proxy = getPayableProxyAddr(networkId)
+      if (!proxy) return toast.error("Can't find payable proxy on this network")
+      if (from === proxy.address) {
         finalAsset = getWeth(networkId).id
         setUsePayableProxy(true)
         setOperateValue(amount)
@@ -93,13 +96,15 @@ export function useController() {
       pushAction(arg)
       track('add-collateral')
     },
-    [pushAction, track, networkId],
+    [pushAction, track, networkId, toast],
   )
 
   const pushRemoveCollateralArg = useCallback(
     (account: string, vaultId: BigNumber, to: string, asset: string, amount: BigNumber) => {
       let finalAsset = asset
-      if (to === getPayableProxyAddr(networkId).address) {
+      const proxy = getPayableProxyAddr(networkId)
+      if (!proxy) return toast.error("Can't find payable proxy on this network")
+      if (to === proxy.address) {
         finalAsset = getWeth(networkId).id
         setUsePayableProxy(true)
       }
@@ -107,7 +112,7 @@ export function useController() {
       pushAction(arg)
       track('remove-collateral')
     },
-    [pushAction, track, networkId],
+    [pushAction, track, networkId, toast],
   )
 
   const pushAddLongArg = useCallback(
@@ -219,6 +224,7 @@ export function useController() {
       // const contract = usePayableProxy ? payableProxy : controller
       try {
         if (usePayableProxy) {
+          if (payableProxy === null) return toast.error('Error loading payable proxy contract')
           await payableProxy.methods
             .operate(actions, user)
             .send({ from: user, value: operateValue.toString() })

@@ -34,11 +34,7 @@ export const useConnection = () => {
 
   const onboard = useMemo(() => {
     function _handleNetworkChange(_networkId) {
-      if (
-        _networkId === SupportedNetworks.Mainnet ||
-        _networkId === SupportedNetworks.Ropsten ||
-        _networkId === SupportedNetworks.Kovan
-      ) {
+      if (networkId in SupportedNetworks) {
         setNetworkId(_networkId)
         storePreference('gamma-networkId', networkId.toString())
       }
@@ -112,7 +108,8 @@ export const initOnboard = (addressChangeCallback, walletChangeCallback, network
             ['3']: RPC_URL,
             // eslint-disable-next-line
             ['42']: RPC_URL,
-            '0x4eacd0af335451709e1e7b570b8ea68edec8bc97': RPC_URL,
+            // eslint-disable-next-line
+            ['0x4eacd0af335451709e1e7b570b8ea68edec8bc97']: RPC_URL,
           }, // [Optional]
           preferred: true,
         },
