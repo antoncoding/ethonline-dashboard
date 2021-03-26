@@ -9,8 +9,6 @@ import {
 import {
   ZeroXEndpoint,
   getPrimaryPaymentToken,
-  getUSDC,
-  zx_exchange,
   OrderType,
   Errors,
   MIN_BID,

@@ -146,8 +146,6 @@ export const addresses: SystemAddresses = {
     pool: '0xa5c2aC879cC605045fb2e702555dEFdDecCc3B3c',
     whitelist: '0xb20Df1356F2ffE9F3ba9b0Ce91C172454FEa6CE1',
     zeroxExchange: '0x4eacd0af335451709e1e7b570b8ea68edec8bc97',
-    zeroxERCProxy: '0xf1ec01d6236d3cd881a0bf0130ea25fe4234003e',
-    zeroxStaking: '0xbab9145f1d57cd4bb0c9aa2d1ece0a5b6e734d34',
   },
 }
 
@@ -201,13 +199,6 @@ export const knownOperators: {
 
 export const getPrimaryPaymentToken = (networkId: SupportedNetworks) => {
   return tokens[networkId].find(t => t.symbol === 'USDC') as Token
-}
-
-export const zx_exchange = {
-  '1': '0x61935cbdd02287b511119ddb11aeb42f1593b7ef',
-  '3': '0xdef1c0ded9bec7f1a1670819833240f027b25eff',
-  '42': '0x4eacd0af335451709e1e7b570b8ea68edec8bc97',
-  '212984383488152': '0x4eacd0af335451709e1e7b570b8ea68edec8bc97', // wont work
 }
 
 export const getUSDC = (networkId: SupportedNetworks) => {
