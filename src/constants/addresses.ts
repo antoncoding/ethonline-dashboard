@@ -16,7 +16,7 @@ export const eth: Token = {
 }
 
 export const tokens: TokensTypes = {
-  '1': [
+  [SupportedNetworks.Mainnet]: [
     eth,
     {
       name: 'USDC',
@@ -31,7 +31,7 @@ export const tokens: TokensTypes = {
       decimals: 18,
     },
   ],
-  '3': [
+  [SupportedNetworks.Ropsten]: [
     eth,
     {
       name: 'Opyn USDC',
@@ -54,7 +54,7 @@ export const tokens: TokensTypes = {
       canMint: true,
     },
   ],
-  '42': [
+  [SupportedNetworks.Kovan]: [
     eth,
     {
       name: 'USDC',
@@ -77,7 +77,7 @@ export const tokens: TokensTypes = {
       canMint: true,
     },
   ],
-  '212984383488152': [
+  [SupportedNetworks.Arbitrum]: [
     // same address with kovan
     eth,
     {
@@ -115,7 +115,7 @@ type SystemAddresses = {
 }
 
 export const addresses: SystemAddresses = {
-  '1': {
+  [SupportedNetworks.Mainnet]: {
     controller: isPublic ? '0x4ccc2339F87F6c59c6893E1A678c2266cA58dC72' : '0xde158Fa7022f11707d4a3570eec4621B35d83829',
     factory: isPublic ? '0x7C06792Af1632E77cb27a558Dc0885338F4Bdf8E' : '0xE21127f47B365d3b1467746804f32BF8dCf47e26',
     addressBook: isPublic ? '0x1E31F2DCBad4dc572004Eae6355fB18F9615cBe4' : '0x57ADe7D5E9D2F45A07f8039Da7228ACC305fbeaF',
@@ -123,7 +123,7 @@ export const addresses: SystemAddresses = {
     whitelist: isPublic ? '0xa5EA18ac6865f315ff5dD9f1a7fb1d41A30a6779' : '0x2244364c94a9FCb6f9ae3A4cF38f279706011882',
     zeroxExchange: '0xdef1c0ded9bec7f1a1670819833240f027b25eff',
   },
-  '3': {
+  [SupportedNetworks.Ropsten]: {
     controller: '0x7e9beaccdccee88558aaa2dc121e52ec6226864e',
     factory: '0x8d6994b701f480c27757c5fe2bd93d5352160081',
     addressBook: '0xe71417eefc794c9b83fc494861981721e26db0e9',
@@ -131,7 +131,7 @@ export const addresses: SystemAddresses = {
     whitelist: '0x5faCA6DF39c897802d752DfCb8c02Ea6959245Fc',
     zeroxExchange: '0xdef1c0ded9bec7f1a1670819833240f027b25eff', // v4
   },
-  '42': {
+  [SupportedNetworks.Kovan]: {
     controller: isPublic ? '0xdee7d0f8ccc0f7ac7e45af454e5e7ec1552e8e4e' : '0xa84cff11957a0a08a3e1d568ed1caaf47626c1f3',
     factory: isPublic ? '0xb9d17ab06e27f63d0fd75099d5874a194ee623e2' : '0x32b5a18238BAdF23F8E88669de2bD3671ff7BF83',
     addressBook: isPublic ? '0x8812f219f507e8cfe9d2f1e790164714c5e06a73' : '0x4163Bf53878B2169Ea9E404b9E840FA010DbF949',
@@ -139,7 +139,7 @@ export const addresses: SystemAddresses = {
     whitelist: isPublic ? '0x9164eB40a1b59512F1803aB4C2d1dE4B89627A93' : '0xc990BB199c0ed8CEE305bD1A4c50A87029AdfAE3',
     zeroxExchange: '0x4eacd0af335451709e1e7b570b8ea68edec8bc97',
   },
-  '212984383488152': {
+  [SupportedNetworks.Arbitrum]: {
     controller: '0x4C8696De199F6e1C069e147382D500C6F04A0374',
     factory: '0x0D963D4DfF92fbeC2897B2Fe38DF74835e36513F',
     addressBook: '0xb9DBed1792e6450015F7ea9fbaB2BAD799638404',
@@ -150,10 +150,10 @@ export const addresses: SystemAddresses = {
 }
 
 export const blacklistOTokens = {
-  '1': [ZERO_ADDR],
-  '3': [ZERO_ADDR],
-  '42': [ZERO_ADDR],
-  '212984383488152': [ZERO_ADDR],
+  [SupportedNetworks.Mainnet]: [ZERO_ADDR],
+  [SupportedNetworks.Ropsten]: [ZERO_ADDR],
+  [SupportedNetworks.Kovan]: [ZERO_ADDR],
+  [SupportedNetworks.Arbitrum]: [ZERO_ADDR],
 }
 
 type KnownOperator = {
@@ -167,7 +167,7 @@ type KnownOperator = {
 export const knownOperators: {
   [key in SupportedNetworks]: KnownOperator[]
 } = {
-  '1': [
+  [SupportedNetworks.Mainnet]: [
     {
       address: isPublic ? '0x8f7dd610c457fc7cb26b0f9db4e77581f94f70ac' : '0xa05157b27b7db2eb63bb0c11412b71e7de027f89',
       name: 'PayableProxy',
@@ -176,7 +176,7 @@ export const knownOperators: {
       author: 'Opyn',
     },
   ],
-  '3': [
+  [SupportedNetworks.Ropsten]: [
     {
       address: '0x7173D861Ce9304ED62B7d3Fbfb3A79C51b566614',
       name: 'PayableProxy',
@@ -185,7 +185,7 @@ export const knownOperators: {
       author: 'Opyn',
     },
   ],
-  '42': [
+  [SupportedNetworks.Kovan]: [
     {
       address: isPublic ? '0x5957a413f5ac4bcf2ba7c5c461a944b548adb1a5' : '0xe501e882f6e5f049899e02b7e48d89f223cb2a4f',
       name: 'PayableProxy',
@@ -194,7 +194,7 @@ export const knownOperators: {
       author: 'Opyn',
     },
   ],
-  '212984383488152': [],
+  [SupportedNetworks.Arbitrum]: [],
 }
 
 export const getPrimaryPaymentToken = (networkId: SupportedNetworks) => {

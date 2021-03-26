@@ -6,15 +6,15 @@ export enum SupportedNetworks {
 }
 
 export const networkIdToTxUrl = {
-  '1': 'https://etherscan.io/tx',
-  '3': 'https://ropsten.etherscan.io/tx',
-  '42': 'https://kovan.etherscan.io/tx',
-  '212984383488152': 'https://explorer.arbitrum.io/#/tx',
+  [SupportedNetworks.Mainnet]: 'https://etherscan.io/tx',
+  [SupportedNetworks.Ropsten]: 'https://ropsten.etherscan.io/tx',
+  [SupportedNetworks.Kovan]: 'https://kovan.etherscan.io/tx',
+  [SupportedNetworks.Arbitrum]: 'https://explorer.arbitrum.io/#/tx',
 }
 
 export const networkIdToAddressUrl = {
-  '1': 'https://etherscan.io/address',
-  '3': 'https://ropsten.etherscan.io/address',
-  '42': 'https://kovan.etherscan.io/address',
-  '212984383488152': 'https://explorer.arbitrum.io/#/address',
+  [SupportedNetworks.Mainnet]: 'https://etherscan.io/address',
+  [SupportedNetworks.Ropsten]: 'https://ropsten.etherscan.io/address',
+  [SupportedNetworks.Kovan]: 'https://kovan.etherscan.io/address',
+  [SupportedNetworks.Arbitrum]: 'https://explorer.arbitrum.io/#/address',
 }

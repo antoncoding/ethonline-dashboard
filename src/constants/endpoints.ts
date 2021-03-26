@@ -7,30 +7,30 @@ type graphEndPointType = {
 const isPublic = process.env.REACT_APP_PUBLIC === 'true'
 
 export const subgraph: graphEndPointType = {
-  '1': isPublic
+  [SupportedNetworks.Mainnet]: isPublic
     ? 'https://api.thegraph.com/subgraphs/name/opynfinance/gamma-mainnet'
     : 'https://api.thegraph.com/subgraphs/name/opynfinance/playground',
-  '3': 'https://api.thegraph.com/subgraphs/name/opynfinance/gamma-ropsten',
-  '42': isPublic
+  [SupportedNetworks.Ropsten]: 'https://api.thegraph.com/subgraphs/name/opynfinance/gamma-ropsten',
+  [SupportedNetworks.Kovan]: isPublic
     ? 'https://api.thegraph.com/subgraphs/name/opynfinance/gamma-kovan'
     : 'https://api.thegraph.com/subgraphs/name/opynfinance/gamma-internal-kovan',
-  '212984383488152': 'http://localhost:8000',
+  [SupportedNetworks.Arbitrum]: 'http://localhost:8000',
 }
 
 export const ZeroXEndpoint: { [key in SupportedNetworks]: { http: string; ws: string } } = {
-  1: {
+  [SupportedNetworks.Mainnet]: {
     http: 'https://api.0x.org/',
     ws: 'wss://api.0x.org/sra/v4',
   },
-  3: {
+  [SupportedNetworks.Ropsten]: {
     http: 'https://ropsten.api.0x.org/',
     ws: 'wss://ropsten.api.0x.org/sra/v4',
   },
-  42: {
+  [SupportedNetworks.Kovan]: {
     http: 'https://kovan.api.0x.org/',
     ws: 'wss://kovan.api.0x.org/sra/v4',
   },
-  212984383488152: {
+  [SupportedNetworks.Arbitrum]: {
     http: 'https://kovan.api.0x.org/',
     ws: 'wss://kovan.api.0x.org/sra/v3',
   },
