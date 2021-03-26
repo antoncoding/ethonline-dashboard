@@ -109,7 +109,7 @@ export const initOnboard = (addressChangeCallback, walletChangeCallback, network
             // eslint-disable-next-line
             ['42']: RPC_URL,
             // eslint-disable-next-line
-            ['0x4eacd0af335451709e1e7b570b8ea68edec8bc97']: RPC_URL,
+            ['212984383488152']: RPC_URL,
           }, // [Optional]
           preferred: true,
         },
