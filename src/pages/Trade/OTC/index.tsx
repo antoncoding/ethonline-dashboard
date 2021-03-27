@@ -24,7 +24,7 @@ export default function OTC() {
 
   const [selectedTab, setSelectedTab] = useState(0)
 
-  return networkId === SupportedNetworks.Kovan ? (
+  return networkId === SupportedNetworks.Kovan || networkId === SupportedNetworks.Arbitrum ? (
     <Info mode="error"> 0x V4 doesn't support kovan testnet, please switch network to Ropsten </Info>
   ) : (
     <>

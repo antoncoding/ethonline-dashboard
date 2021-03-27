@@ -78,14 +78,12 @@ export const tokens: TokensTypes = {
     },
   ],
   [SupportedNetworks.Arbitrum]: [
-    // same address with kovan
     eth,
     {
       name: 'USDC',
-      id: '0xf5cb5408b40e819e7db5347664be03b52accac9d',
+      id: '0x20DBdC336C655EC9de73f94F9Ef9eE6fa69c6f35',
       symbol: 'USDC',
       decimals: 6,
-      canMint: true,
     },
     {
       name: 'Wrapped Ether',
@@ -95,10 +93,9 @@ export const tokens: TokensTypes = {
     },
     {
       name: 'Wrapped Bitcoin',
-      id: '0xd7c8c2f7b6ebdbc88e5ab0101dd24ed5aca58b0f',
+      id: '0xc43A7d34fF40555CdcE6Ed636f152eF8b44adb97',
       symbol: 'WBTC',
       decimals: 8,
-      canMint: true,
     },
   ],
 }

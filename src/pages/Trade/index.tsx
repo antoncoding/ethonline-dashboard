@@ -23,7 +23,7 @@ function TradePage() {
       <Comment padding={0} text="Trade oTokens with 0x protocol!" />
       <br />
       <br />
-      {networkId === SupportedNetworks.Kovan ? (
+      {networkId === SupportedNetworks.Kovan || networkId === SupportedNetworks.Arbitrum ? (
         <Info mode="error"> 0x V4 doesn't support kovan testnet, please switch to Ropsten testnet to proceed </Info>
       ) : (
         <>

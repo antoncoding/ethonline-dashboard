@@ -33,7 +33,7 @@ export default function TradePage() {
 
   const spotPrice = useTokenPrice(selectedUnderlying.id, 10)
 
-  return networkId === SupportedNetworks.Kovan ? (
+  return networkId === SupportedNetworks.Kovan || networkId === SupportedNetworks.Arbitrum ? (
     <Info mode="error"> 0x V4 doesn't support kovan testnet, please switch network to Ropsten </Info>
   ) : (
     <>

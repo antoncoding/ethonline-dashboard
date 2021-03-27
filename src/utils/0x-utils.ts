@@ -170,7 +170,7 @@ export async function getOTokenUSDCOrderBook(
   bids: OrderWithMetaData[]
 }> {
   // skip request for kovan.
-  if (networkId === SupportedNetworks.Kovan) {
+  if (networkId === SupportedNetworks.Kovan || networkId === SupportedNetworks.Arbitrum) {
     return {
       success: false,
       asks: [],
