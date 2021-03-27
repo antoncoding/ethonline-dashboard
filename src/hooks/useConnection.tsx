@@ -2,19 +2,20 @@ import { useState, useEffect, useCallback, useMemo } from 'react'
 import { getPreference, storePreference } from '../utils/storage'
 import Onboard from 'bnc-onboard'
 import Web3 from 'web3'
-import { SupportedNetworks } from '../constants'
+import { SupportedNetworks, networkIdToProvider } from '../constants'
 
-const INFURA_KEY = process.env.REACT_APP_INFURA_KEY
 const BLOCKNATIVE_KEY = process.env.REACT_APP_BLOCKNATIVE_KEY
 const FORTMATIC_KEY = process.env.REACT_APP_FORTMATIC_KEY
 
 export const useConnection = () => {
   const [user, setUser] = useState<string>('')
 
-  const [web3, setWeb3] = useState<Web3>(new Web3(`https://mainnet.infura.io/v3/${INFURA_KEY}`))
-
   const storedNetwork = Number(getPreference('gamma-networkId', '1'))
   const [networkId, setNetworkId] = useState<SupportedNetworks>(storedNetwork)
+
+  console.log(`networkId`, networkId)
+
+  const [web3, setWeb3] = useState<Web3>(new Web3(networkIdToProvider[networkId]))
 
   // function for block native sdk when address is updated
   const setAddressCallback = useCallback((address: string | undefined) => {
@@ -33,10 +34,11 @@ export const useConnection = () => {
   }, [])
 
   const onboard = useMemo(() => {
-    function _handleNetworkChange(_networkId) {
-      if (networkId in SupportedNetworks) {
+    function _handleNetworkChange(_networkId: number) {
+      if (_networkId === undefined) return
+      if (_networkId in SupportedNetworks) {
         setNetworkId(_networkId)
-        storePreference('gamma-networkId', networkId.toString())
+        storePreference('gamma-networkId', _networkId.toString())
       }
       if (onboard)
         onboard.config({
@@ -44,7 +46,12 @@ export const useConnection = () => {
         })
     }
 
-    return initOnboard(setAddressCallback, setWalletCallback, _handleNetworkChange, networkId)
+    return initOnboard(
+      setAddressCallback,
+      setWalletCallback,
+      _handleNetworkChange,
+      networkId ? networkId : SupportedNetworks.Mainnet,
+    )
   }, [setAddressCallback, setWalletCallback, networkId])
 
   // get last connection info and try to set default user to previous connected account.
@@ -81,11 +88,7 @@ export const useConnection = () => {
 }
 
 export const initOnboard = (addressChangeCallback, walletChangeCallback, networkChangeCallback, networkId) => {
-  const networkname = networkId === 1 ? 'mainnet' : networkId === 3 ? 'ropsten' : 'kovan'
-  const RPC_URL =
-    networkId === SupportedNetworks.Arbitrum
-      ? 'https://kovan4.arbitrum.io/rpc'
-      : `https://${networkname}.infura.io/v3/${INFURA_KEY}`
+  const RPC_URL = networkIdToProvider[networkId]
   const onboard = Onboard({
     darkMode: getPreference('theme', 'light') === 'dark',
     dappId: BLOCKNATIVE_KEY, // [String] The API key created by step one above

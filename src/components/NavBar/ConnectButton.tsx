@@ -1,15 +1,15 @@
 import React from 'react'
 
-import { Button, IconConnect, Box, IconPower, IdentityBadge } from '@aragon/ui'
+import { Button, IconConnect, IconPower, IdentityBadge } from '@aragon/ui'
 
 import { checkAddressAndAddToStorage } from '../../utils/storage'
 import { useConnectedWallet } from '../../contexts/wallet'
-import { SupportedNetworks } from '../../constants'
+import { SupportedNetworks, networkIdToName } from '../../constants'
 
 function ConnectButton() {
   const { networkId, connect, disconnect, user } = useConnectedWallet()
 
-  let color = 'rgb(3, 135, 137, 0.7)'
+  let color = '#26EF4B'
   switch (networkId) {
     case SupportedNetworks.Ropsten: {
       color = '#ff4a8d'
@@ -31,19 +31,8 @@ function ConnectButton() {
   }
 
   return user !== '' ? (
-    <>
-      <Box padding={6}>
-        <div
-          style={{
-            verticalAlign: 'middle',
-            marginRight: '7px',
-            display: 'inline-block',
-            backgroundColor: color,
-            borderRadius: '50%',
-            width: '10px',
-            height: '10px',
-          }}
-        />
+    <div>
+      <div>
         <IdentityBadge
           entity={user}
           popoverAction={{
@@ -55,8 +44,25 @@ function ConnectButton() {
             onClick: disconnect,
           }}
         />
-      </Box>
-    </>
+      </div>
+      <div style={{ display: 'flex', paddingRight: 3 }}>
+        <div style={{ color, fontSize: 11, marginLeft: 'auto' }}>
+          <div
+            style={{
+              verticalAlign: 'middle',
+              paddingTop: 3,
+              marginRight: '7px',
+              display: 'inline-block',
+              backgroundColor: color,
+              borderRadius: '50%',
+              width: '7px',
+              height: '7px',
+            }}
+          />
+          Connected to {networkIdToName[networkId]}
+        </div>
+      </div>
+    </div>
   ) : (
     <Button mode="normal" icon={<IconConnect />} label="Connect" onClick={connectWeb3} />
   )
