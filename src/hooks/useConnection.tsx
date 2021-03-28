@@ -13,8 +13,6 @@ export const useConnection = () => {
   const storedNetwork = Number(getPreference('gamma-networkId', '1'))
   const [networkId, setNetworkId] = useState<SupportedNetworks>(storedNetwork)
 
-  console.log(`networkId`, networkId)
-
   const [web3, setWeb3] = useState<Web3>(new Web3(networkIdToProvider[networkId]))
 
   // function for block native sdk when address is updated
@@ -105,14 +103,13 @@ export const initOnboard = (addressChangeCallback, walletChangeCallback, network
         {
           walletName: 'walletConnect',
           rpc: {
+            [SupportedNetworks.Mainnet]: RPC_URL,
             // eslint-disable-next-line
-            ['1']: RPC_URL,
+            [SupportedNetworks.Ropsten]: RPC_URL,
             // eslint-disable-next-line
-            ['3']: RPC_URL,
+            [SupportedNetworks.Kovan]: RPC_URL,
             // eslint-disable-next-line
-            ['42']: RPC_URL,
-            // eslint-disable-next-line
-            ['212984383488152']: RPC_URL,
+            [SupportedNetworks.Arbitrum]: RPC_URL,
           }, // [Optional]
           preferred: true,
         },
