@@ -34,11 +34,7 @@ export const useConnection = () => {
 
   const onboard = useMemo(() => {
     function _handleNetworkChange(_networkId) {
-      if (
-        _networkId === SupportedNetworks.Mainnet ||
-        _networkId === SupportedNetworks.Ropsten ||
-        _networkId === SupportedNetworks.Kovan
-      ) {
+      if (_networkId in SupportedNetworks) {
         setNetworkId(_networkId)
         storePreference('gamma-networkId', networkId.toString())
       }

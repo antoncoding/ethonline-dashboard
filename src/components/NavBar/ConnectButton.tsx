@@ -14,7 +14,9 @@ function ConnectButton() {
       ? 'rgb(3, 135, 137, 0.7)'
       : networkId === SupportedNetworks.Ropsten
       ? '#ff4a8d'
-      : '#8F7FFE'
+      : networkId === SupportedNetworks.BSC
+      ? 'rgb(245, 221, 66)'
+      : '#8F7FFE' // kovan
   const connectWeb3 = async () => {
     const address = await connect()
     if (!address) return

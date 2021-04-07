@@ -44,8 +44,9 @@ export function useController() {
   }, [networkId, web3])
 
   const payableProxy = useMemo(() => {
-    const address = getPayableProxyAddr(networkId).address
-    return new web3.eth.Contract(payableProxyAbi, address)
+    const prorxy = getPayableProxyAddr(networkId)
+    if (!prorxy) return null
+    return new web3.eth.Contract(payableProxyAbi, prorxy?.address)
   }, [networkId, web3])
 
   const updateVaultId = useCallback(() => {
@@ -84,7 +85,8 @@ export function useController() {
   const pushAddCollateralArg = useCallback(
     (account: string, vaultId: BigNumber, from: string, asset: string, amount: BigNumber) => {
       let finalAsset = asset
-      if (from === getPayableProxyAddr(networkId).address) {
+      const proxy = getPayableProxyAddr(networkId)
+      if (proxy && from === proxy.address) {
         finalAsset = getWeth(networkId).id
         setUsePayableProxy(true)
         setOperateValue(amount)
@@ -99,7 +101,8 @@ export function useController() {
   const pushRemoveCollateralArg = useCallback(
     (account: string, vaultId: BigNumber, to: string, asset: string, amount: BigNumber) => {
       let finalAsset = asset
-      if (to === getPayableProxyAddr(networkId).address) {
+      const proxy = getPayableProxyAddr(networkId)
+      if (proxy && to === proxy.address) {
         finalAsset = getWeth(networkId).id
         setUsePayableProxy(true)
       }
@@ -219,6 +222,7 @@ export function useController() {
       // const contract = usePayableProxy ? payableProxy : controller
       try {
         if (usePayableProxy) {
+          if (!payableProxy) return toast.error('Cannot find payable proxy')
           await payableProxy.methods
             .operate(actions, user)
             .send({ from: user, value: operateValue.toString() })

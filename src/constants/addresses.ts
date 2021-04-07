@@ -61,6 +61,20 @@ export const tokens: Tokens = {
       canMint: true,
     },
   ],
+  [SupportedNetworks.BSC]: [
+    {
+      name: 'Binance-Peg USD Coin',
+      id: '0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d',
+      symbol: 'USDC',
+      decimals: 18,
+    },
+    {
+      name: 'Binance-Peg ETH',
+      id: '0x2170ed0880ac9a755fd29b2688956bd959f933f8',
+      symbol: 'WETH',
+      decimals: 18,
+    },
+  ],
   [SupportedNetworks.Kovan]: [
     eth,
     {
@@ -114,6 +128,14 @@ export const addresses: SystemAddresses = {
     whitelist: '0x5faCA6DF39c897802d752DfCb8c02Ea6959245Fc',
     zeroxExchange: '0xdef1c0ded9bec7f1a1670819833240f027b25eff', // v4
   },
+  [SupportedNetworks.BSC]: {
+    controller: '0x5ca72b05416f728c877942078454d458e6733421',
+    factory: '0x17ffbe9476ddcc79f4574e0c89ce537fd65a8cae',
+    addressBook: '0x7630e7de53e3d1f298f653d27fcf3710c602331c',
+    pool: '0x228d386d950984d1f4a2425683e620558a1430d9',
+    whitelist: '0x8d6994b701f480c27757c5fe2bd93d5352160081',
+    zeroxExchange: '0xdef1c0ded9bec7f1a1670819833240f027b25eff',
+  },
   [SupportedNetworks.Kovan]: {
     controller: isPublic ? '0xdee7d0f8ccc0f7ac7e45af454e5e7ec1552e8e4e' : '0xa84cff11957a0a08a3e1d568ed1caaf47626c1f3',
     factory: isPublic ? '0xb9d17ab06e27f63d0fd75099d5874a194ee623e2' : '0x32b5a18238BAdF23F8E88669de2bD3671ff7BF83',
@@ -127,6 +149,7 @@ export const addresses: SystemAddresses = {
 export const blacklistOTokens = {
   [SupportedNetworks.Mainnet]: [ZERO_ADDR],
   [SupportedNetworks.Ropsten]: [ZERO_ADDR],
+  [SupportedNetworks.BSC]: [ZERO_ADDR],
   [SupportedNetworks.Kovan]: ['0x81300ac27ac2470713602b4d8a73dfcc85b779b1'],
 }
 
@@ -159,6 +182,7 @@ export const knownOperators: {
       author: 'Opyn',
     },
   ],
+  [SupportedNetworks.BSC]: [],
   [SupportedNetworks.Kovan]: [
     {
       address: isPublic ? '0x5957a413f5ac4bcf2ba7c5c461a944b548adb1a5' : '0xe501e882f6e5f049899e02b7e48d89f223cb2a4f',
@@ -183,5 +207,5 @@ export const getWeth = (networkId: SupportedNetworks) => {
 }
 
 export const getPayableProxyAddr = (networkId: SupportedNetworks) => {
-  return knownOperators[networkId].find(o => o.name === 'PayableProxy') as KnownOperator
+  return knownOperators[networkId].find(o => o.name === 'PayableProxy')
 }

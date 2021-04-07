@@ -175,8 +175,10 @@ export default function VaultDetail() {
   const pushAddCollateral = useCallback(() => {
     // if using eth, from address is payable proxy
     let from = user
+    const proxy = getPayableProxyAddr(networkId)
     if (collateralToken.id === ZERO_ADDR) {
-      from = getPayableProxyAddr(networkId).address
+      if (!proxy) return toast.error('Trying to use native token but cant find payable proxy')
+      from = proxy.address
     }
     controller.pushAddCollateralArg(
       user,
@@ -188,12 +190,14 @@ export default function VaultDetail() {
 
     setChangeCollateralAmount(new BigNumber(0))
     setPendingCollateralAmount(` + ${changeCollateralAmount.toString()}`)
-  }, [collateralToken, controller, user, vaultId, changeCollateralAmount, networkId])
+  }, [collateralToken, controller, user, vaultId, changeCollateralAmount, networkId, toast])
 
   const pushRemoveCollateral = useCallback(() => {
     let to = user
+    const proxy = getPayableProxyAddr(networkId)
     if (collateralToken.id === ZERO_ADDR) {
-      to = getPayableProxyAddr(networkId).address
+      if (!proxy) return toast.error('Trying to use native token but cant find payable proxy')
+      to = proxy.address
     }
     controller.pushRemoveCollateralArg(
       user,
@@ -204,7 +208,16 @@ export default function VaultDetail() {
     )
     setChangeCollateralAmount(new BigNumber(0))
     setPendingCollateralAmount(` - ${changeCollateralAmount.toString()}`)
-  }, [controller, user, vaultId, collateralToken.id, collateralToken.decimals, changeCollateralAmount, networkId])
+  }, [
+    controller,
+    user,
+    vaultId,
+    collateralToken.id,
+    collateralToken.decimals,
+    changeCollateralAmount,
+    networkId,
+    toast,
+  ])
 
   const pushAddLong = useCallback(() => {
     if (!longOtoken) {
