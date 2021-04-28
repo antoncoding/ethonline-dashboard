@@ -111,8 +111,6 @@ export function use0xExchange() {
       const feeInEth = getProtocolFee(orders).toString()
       const amountsStr = amounts.map(amount => amount.toString())
 
-      console.log(`only filling first order la, orders[0]`, orders[0])
-
       // change to batch Fill when it's live
       await exchange.methods
         .batchFillLimitOrders(orders, signatures, amountsStr, false)

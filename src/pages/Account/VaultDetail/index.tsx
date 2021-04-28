@@ -383,7 +383,6 @@ export default function VaultDetail() {
   )
 
   const onClickOperate = useCallback(() => {
-    console.log(`onClickOperate, triggered`)
     setIsSendingTx(true)
     controller.operateCache(
       () => {

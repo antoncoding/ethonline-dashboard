@@ -84,7 +84,6 @@ export const getBidsSummary = (bids: OrderWithMetaData[]) => {
   if (bids.length === 0) return { bestBidPrice, totalBidAmt }
 
   const quoteDecimals = getPrimaryPaymentToken(bids[0].order.chainId).decimals
-  console.log(`quoteDecimals`, quoteDecimals)
   bestBidPrice = getBidPrice(bids[0].order, quoteDecimals, 8)
   totalBidAmt = getTotalBidAmount(bids, 8)
   return {
@@ -222,7 +221,6 @@ export const isValidBid = (entry: OrderWithMetaData) => {
 export const isValidAsk = (entry: OrderWithMetaData) => {
   const quoteDecimals = getPrimaryPaymentToken(entry.order.chainId).decimals
   const askPrice = getAskPrice(entry.order, 8, quoteDecimals)
-  console.log(`askPrice`, askPrice.toString())
   return askPrice.lt(MAX_ASK) && isValid(entry)
 }
 
@@ -333,9 +331,7 @@ export const getAskPrice = (
   takerAssetDecimals: number = 6,
 ): BigNumber => {
   const makerAssetAmount = toTokenAmount(new BigNumber(ask.makerAmount), makerAssetDecimals)
-  console.log(`makerAssetAmount`, makerAssetAmount.toString())
   const takerAssetAmount = toTokenAmount(new BigNumber(ask.takerAmount), takerAssetDecimals)
-  console.log(`takerAssetAmount`, takerAssetAmount.toString())
   return takerAssetAmount.div(makerAssetAmount)
 }
 
