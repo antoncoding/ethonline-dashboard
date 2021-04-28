@@ -29,8 +29,10 @@ function orderbookReducer(
       return action.books ?? []
     }
     case OrderbookUpdateType.Update: {
+      console.log(`update triggered`)
       if (!action.updateInfos) return books
       let orderbooksCopy = [...books]
+      console.log(`action.updateInfos`, action.updateInfos)
       for (const { type, token, order: orderInfo } of action.updateInfos) {
         if (type === OrderType.BID) {
           const orderBookForThisOToken = orderbooksCopy.find(ob => ob.id === token)
@@ -49,10 +51,12 @@ function orderbookReducer(
             if (orderInfo.metaData.remainingFillableTakerAmount !== '0') {
               const bids = [orderInfo]
               orderbooksCopy.push({ bids, asks: [], id: token })
+              console.log(`orderbooksCopy`, orderbooksCopy)
             }
           }
         } else if (type === OrderType.ASK) {
           const orderBookForThisOToken = orderbooksCopy.find(ob => ob.id === token)
+          console.log(`orderBookForThisOToken`, orderBookForThisOToken)
           if (orderBookForThisOToken) {
             const asks = orderBookForThisOToken.asks
             const existingAskIdx = asks.findIndex(ask => ask.metaData.orderHash === orderInfo.metaData.orderHash)
@@ -61,8 +65,10 @@ function orderbookReducer(
             } else {
               orderBookForThisOToken.asks.push(orderInfo)
               orderBookForThisOToken.asks = orderBookForThisOToken.asks.sort(sortAsks)
+              console.log(`orderBookForThisOToken.asks`, orderBookForThisOToken.asks)
             }
             orderBookForThisOToken.asks = orderBookForThisOToken.asks.filter(isValidAsk)
+            console.log(`orderBookForThisOToken.asks`, orderBookForThisOToken.asks)
           } else {
             // no orderbook for this oToken
             if (orderInfo.metaData.remainingFillableTakerAmount !== '0') {
@@ -72,6 +78,7 @@ function orderbookReducer(
           }
         }
       }
+      console.log(`orderbooksCopy`, orderbooksCopy)
       return orderbooksCopy
     }
     case OrderbookUpdateType.Expire: {
@@ -166,6 +173,7 @@ export function use0xOrderBooks(oTokens: SubgraphOToken[], completeCallback?: an
         return { type, token, order: orderInfo }
       })
       .filter(updateInfo => {
+        console.log(`updateInfo`, updateInfo)
         return updateInfo.type !== OrderType.NOT_OTOKEN
       })
 

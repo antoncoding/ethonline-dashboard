@@ -27,8 +27,8 @@ export const ZeroXEndpoint: { [key in SupportedNetworks]: { http: string; ws: st
     ws: 'wss://ropsten.api.0x.org/sra/v4',
   },
   56: {
-    http: 'https://bsc.api.0x.org/',
-    ws: 'wss://bsc.api.0x.org/sra/v4',
+    http: 'http://localhost:3000/',
+    ws: 'ws://localhost:3000/sra/v4',
   },
   42: {
     http: 'https://kovan.api.0x.org/',

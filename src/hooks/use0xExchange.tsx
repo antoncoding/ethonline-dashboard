@@ -165,7 +165,11 @@ export function use0xExchange() {
       })
       if (res.status === 200) return toast.success('Order successfully broadcasted')
       const jsonRes = await res.json()
-      if (jsonRes.validationErrors) return toast.error(jsonRes.validationErrors[0].reason)
+
+      if (jsonRes.validationErrors) {
+        console.log(`jsonRes.validationErrors[0].reason`, jsonRes.validationErrors[0].reason)
+        return toast.error(jsonRes.validationErrors[0].reason)
+      }
 
       toast.error(JSON.stringify(jsonRes))
     },

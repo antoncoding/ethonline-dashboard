@@ -79,8 +79,14 @@ export async function getBasePairAskAndBids(
 }
 
 export const getBidsSummary = (bids: OrderWithMetaData[]) => {
-  const bestBidPrice = bids.length > 0 ? getBidPrice(bids[0].order, 6, 8) : new BigNumber(0)
-  const totalBidAmt = getTotalBidAmount(bids, 8)
+  let bestBidPrice = new BigNumber(0)
+  let totalBidAmt = new BigNumber(0)
+  if (bids.length === 0) return { bestBidPrice, totalBidAmt }
+
+  const quoteDecimals = getPrimaryPaymentToken(bids[0].order.chainId).decimals
+  console.log(`quoteDecimals`, quoteDecimals)
+  bestBidPrice = getBidPrice(bids[0].order, quoteDecimals, 8)
+  totalBidAmt = getTotalBidAmount(bids, 8)
   return {
     bestBidPrice,
     totalBidAmt,
@@ -88,8 +94,12 @@ export const getBidsSummary = (bids: OrderWithMetaData[]) => {
 }
 
 export const getAsksSummary = (asks: OrderWithMetaData[]) => {
-  const bestAskPrice = asks.length > 0 ? getAskPrice(asks[0].order, 8, 6) : new BigNumber(0)
-  const totalAskAmt = getTotalAskAmount(asks, 8)
+  let bestAskPrice = new BigNumber(0)
+  let totalAskAmt = new BigNumber(0)
+  if (asks.length === 0) return { bestAskPrice, totalAskAmt }
+  const quoteDecimals = getPrimaryPaymentToken(asks[0].order.chainId).decimals
+  bestAskPrice = getAskPrice(asks[0].order, 8, quoteDecimals)
+  totalAskAmt = getTotalAskAmount(asks, 8)
   return {
     bestAskPrice,
     totalAskAmt,
@@ -204,12 +214,15 @@ export async function getOTokenUSDCOrderBook(
 }
 
 export const isValidBid = (entry: OrderWithMetaData) => {
-  const bidPrice = getBidPrice(entry.order, 6, 8)
+  const quoteDecimals = getPrimaryPaymentToken(entry.order.chainId).decimals
+  const bidPrice = getBidPrice(entry.order, quoteDecimals, 8)
   return bidPrice.gt(MIN_BID) && isValid(entry)
 }
 
 export const isValidAsk = (entry: OrderWithMetaData) => {
-  const askPrice = getAskPrice(entry.order, 6, 8)
+  const quoteDecimals = getPrimaryPaymentToken(entry.order.chainId).decimals
+  const askPrice = getAskPrice(entry.order, 8, quoteDecimals)
+  console.log(`askPrice`, askPrice.toString())
   return askPrice.lt(MAX_ASK) && isValid(entry)
 }
 
@@ -220,8 +233,8 @@ const isValid = (entry: OrderWithMetaData) => {
   const FILL_BUFFER = 35
   const open = entry.order.taker === ZERO_ADDR
   const notExpired = parseInt(entry.order.expiry, 10) > Date.now() / 1000 + FILL_BUFFER
-  const notDust = getOrderFillRatio(entry).gt(5) // got at least 5% unfill
-  return notExpired && notDust && open
+  // const notDust = getOrderFillRatio(entry).gt(5) // got at least 5% unfill
+  return notExpired && open
 }
 
 export const getOrderFillRatio = (order: OrderWithMetaData) =>
@@ -290,8 +303,9 @@ export const getBidPrice = (
  * @param b
  */
 export const sortBids = (a: OrderWithMetaData, b: OrderWithMetaData): 1 | -1 => {
-  const priceA = getBidPrice(a.order, 6, 8)
-  const priceB = getBidPrice(b.order, 6, 8)
+  // sorting funciton, doensn't matter what decimals we pass in
+  const priceA = getBidPrice(a.order)
+  const priceB = getBidPrice(b.order)
   return priceA.gt(priceB) ? -1 : 1
 }
 
@@ -301,8 +315,9 @@ export const sortBids = (a: OrderWithMetaData, b: OrderWithMetaData): 1 | -1 => 
  * @param b
  */
 export const sortAsks = (a: OrderWithMetaData, b: OrderWithMetaData): 1 | -1 => {
-  const priceA = getAskPrice(a.order, 8, 6)
-  const priceB = getAskPrice(b.order, 8, 6)
+  // sorting funciton, doensn't matter what decimals we pass in
+  const priceA = getAskPrice(a.order)
+  const priceB = getAskPrice(b.order)
   return priceA.gt(priceB) ? 1 : -1
 }
 
@@ -318,7 +333,9 @@ export const getAskPrice = (
   takerAssetDecimals: number = 6,
 ): BigNumber => {
   const makerAssetAmount = toTokenAmount(new BigNumber(ask.makerAmount), makerAssetDecimals)
+  console.log(`makerAssetAmount`, makerAssetAmount.toString())
   const takerAssetAmount = toTokenAmount(new BigNumber(ask.takerAmount), takerAssetDecimals)
+  console.log(`takerAssetAmount`, takerAssetAmount.toString())
   return takerAssetAmount.div(makerAssetAmount)
 }
 

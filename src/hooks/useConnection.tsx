@@ -105,6 +105,7 @@ export const initOnboard = (addressChangeCallback, walletChangeCallback, network
             [SupportedNetworks.Ropsten]: RPC_URL,
             // eslint-disable-next-line
             [SupportedNetworks.Kovan]: RPC_URL,
+            [SupportedNetworks.BSC]: 'https://bsc-dataseed.binance.org/',
           }, // [Optional]
           preferred: true,
         },

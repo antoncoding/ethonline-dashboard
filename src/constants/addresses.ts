@@ -63,7 +63,7 @@ export const tokens: Tokens = {
   ],
   [SupportedNetworks.BSC]: [
     {
-      name: 'Binance-Peg USD Coin',
+      name: 'Binance-Peg USDC',
       id: '0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d',
       symbol: 'USDC',
       decimals: 18,
@@ -195,7 +195,7 @@ export const knownOperators: {
 }
 
 export const getPrimaryPaymentToken = (networkId: SupportedNetworks) => {
-  return tokens[networkId].find(t => t.symbol === 'USDC') as Token
+  return tokens[networkId].find(t => t.symbol.includes('USDC')) as Token
 }
 
 export const getUSDC = (networkId: SupportedNetworks) => {
