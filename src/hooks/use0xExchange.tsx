@@ -7,19 +7,12 @@ import { useNotify } from './useNotify'
 import { SignedOrder } from '../types'
 import { useGasPrice } from './useGasPrice'
 import { useCustomToast } from './useCustomToast'
-// import { ZEROX_PROTOCOL_FEE_KEY, FeeTypes } from '../constants'
-
-// import { getPreference } from '../utils/storage'
 
 const v4orderUtils = require('@0x/protocol-utils')
 const FEE_PERORDER_PER_GWEI = 0.00007
-// const FEE_RECIPIENT = '0xd325e15a52b780698c45ca3bdb6c49444fe5b588'
-
 const abi = require('../constants/abis/0xV4Exchange.json')
 
 export function use0xExchange() {
-  // const payWithWeth = useMemo(() => getPreference(ZEROX_PROTOCOL_FEE_KEY, FeeTypes.ETH) === FeeTypes.WETH, [])
-
   const toast = useCustomToast()
   const { networkId, web3, user } = useConnectedWallet()
 
