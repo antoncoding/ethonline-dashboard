@@ -4,7 +4,7 @@ import BigNumber from 'bignumber.js'
 import { useConnectedWallet } from '../contexts/wallet'
 import { addresses, ZeroXEndpoint, SupportedNetworks } from '../constants'
 import { useNotify } from './useNotify'
-import { SignedOrder } from '../types'
+import { SignedOrder, SignedRfqOrder } from '../types'
 import { useGasPrice } from './useGasPrice'
 import { useCustomToast } from './useCustomToast'
 // import { ZEROX_PROTOCOL_FEE_KEY, FeeTypes } from '../constants'
@@ -111,8 +111,6 @@ export function use0xExchange() {
       const feeInEth = getProtocolFee(orders).toString()
       const amountsStr = amounts.map(amount => amount.toString())
 
-      console.log(`only filling first order la, orders[0]`, orders[0])
-
       // change to batch Fill when it's live
       await exchange.methods
         .batchFillLimitOrders(orders, signatures, amountsStr, false)
@@ -153,6 +151,29 @@ export function use0xExchange() {
     [networkId, getProtocolFee, getGasPriceForOrders, notifyCallback, user, web3, track],
   )
 
+  const fillRFQOrder = useCallback(
+    async (order: SignedRfqOrder | null, amount: BigNumber) => {
+      if (!order) {
+        toast.error('No Orde availalbe')
+        return
+      }
+      const exchange = new web3.eth.Contract(abi, addresses[networkId].zeroxExchange)
+
+      const gasPrice = fast
+      const amountStr = amount.toString()
+
+      await exchange.methods
+        .fillRfqOrder(order, order.signature, amountStr)
+        .send({
+          from: user,
+          gasPrice: web3.utils.toWei(gasPrice.toString(), 'gwei'),
+        })
+        .on('transactionHash', notifyCallback)
+      track('fill-order')
+    },
+    [networkId, notifyCallback, user, web3, track, fast, toast],
+  )
+
   const broadcastOrder = useCallback(
     async (order: SignedOrder) => {
       const url = `${httpEndpoint}sra/v4/order`
@@ -188,5 +209,5 @@ export function use0xExchange() {
     [web3, notifyCallback, networkId, track, user],
   )
 
-  return { getProtocolFee, fillOrders, fillOrder, createOrder, broadcastOrder, cancelOrders }
+  return { getProtocolFee, fillOrders, fillOrder, createOrder, broadcastOrder, cancelOrders, fillRFQOrder }
 }

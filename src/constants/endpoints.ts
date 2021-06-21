@@ -16,6 +16,12 @@ export const subgraph: graphEndPointType = {
   [SupportedNetworks.Ropsten]: 'https://api.thegraph.com/subgraphs/name/opynfinance/gamma-ropsten',
 }
 
+export const rfqServer: graphEndPointType = {
+  [SupportedNetworks.Mainnet]: 'https://quoter-testnet-jt76tpqb5q-uc.a.run.app/', // update this
+  [SupportedNetworks.Kovan]: 'https://quoter-testnet-jt76tpqb5q-uc.a.run.app/', // update this
+  [SupportedNetworks.Ropsten]: 'https://quoter-testnet-jt76tpqb5q-uc.a.run.app/',
+}
+
 export const ZeroXEndpoint: { [key in SupportedNetworks]: { http: string; ws: string } } = {
   1: {
     http: 'https://api.0x.org/',

@@ -44,7 +44,7 @@ export const getTokenPriceCoingecko = async (token: string | undefined): Promise
   // WBTC
   if (
     requestAddr.toLowerCase() === '0xd7c8c2f7b6ebdbc88e5ab0101dd24ed5aca58b0f' ||
-    requestAddr.toLowerCase() === '0xd7c8c2f7b6ebdbc88e5ab0101dd24ed5aca58b0f'
+    requestAddr.toLowerCase() === '0x6b8baf03cb00f8f1fa94999b71047fea06f7251a'
   )
     requestAddr = '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599'
 

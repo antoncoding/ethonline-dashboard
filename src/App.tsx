@@ -28,6 +28,7 @@ import Trade from './pages/Trade'
 import Orderbook from './pages/Trade/OrderBookTrade'
 import Swap from './pages/Trade/Swap'
 import OTC from './pages/Trade/OTC'
+import RFQ from './pages/Trade/RFQ'
 
 import { useConnection } from './hooks/useConnection'
 
@@ -80,6 +81,16 @@ function App() {
                   </Route>
                   <Route path="/trade/swap/">
                     <Swap />
+                  </Route>
+                  <Route path="/trade/rfq/:otoken">
+                    <Layout>
+                      <RFQ />
+                    </Layout>
+                  </Route>
+                  <Route path="/trade/rfq/">
+                    <Layout>
+                      <RFQ />
+                    </Layout>
                   </Route>
                   <Route path="/trade/otc/">
                     <OTC />

@@ -31,11 +31,11 @@ function TradePage() {
           <Row>
             <Col sm={12} md={6} lg={4}>
               <BoxButton
-                title="Swap"
-                description="Simple swap between oToken and USDC"
+                title="RFQ"
+                description="Directly trade larger size with market makers"
                 icon={<IconSwap size="large" />}
                 onClick={() => {
-                  history.push('/trade/swap/')
+                  history.push('/trade/rfq/')
                 }}
               />
             </Col>

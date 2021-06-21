@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { useHistory } from 'react-router-dom'
 import { Visible } from 'react-grid-system'
 
-import { useTheme, IconHome, IconUser, IconConfiguration, LinkBase, IconSwap } from '@aragon/ui'
+import { useTheme, IconHome, IconUser, IconConfiguration, LinkBase, IconSwap, Tag } from '@aragon/ui'
 import SidebarTitle from './SidebarTitle'
 import SubButton from './SubButton'
 
@@ -127,11 +127,15 @@ export default function SideBar() {
         />
 
         <SubButton
-          title="Swap"
+          title={
+            <>
+              RFQ <Tag> New </Tag>
+            </>
+          }
           onClick={() => {
-            history.push(`/trade/swap/`)
+            history.push(`/trade/rfq/`)
           }}
-          isSelected={selectedTab === 4 && subSelected === 'swap'}
+          isSelected={selectedTab === 4 && subSelected === 'rfq'}
           shown={selectedTab === 4}
         />
         <SubButton
@@ -196,8 +200,8 @@ function locationToSubButtomId(location) {
     ? 'oracle'
     : location.pathname.includes('/otokens/')
     ? 'otokens'
-    : location.pathname.includes('/swap/')
-    ? 'swap'
+    : location.pathname.includes('/rfq/')
+    ? 'rfq'
     : location.pathname.includes('/orderbook/')
     ? 'orderbook'
     : location.pathname.includes('/otc/')

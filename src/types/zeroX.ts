@@ -1,3 +1,5 @@
+// import { Signature } from '@0x/protocol-utils'
+
 export type OrderWithMetaData = {
   order: SignedOrder
   metaData: {
@@ -6,13 +8,42 @@ export type OrderWithMetaData = {
   }
 }
 
+type Signature = {
+  r: string
+  s: string
+  v: number
+  signatureType: number
+}
+
 export type SignedOrder = UnsignedOrder & {
-  signature: {
-    r: string
-    s: string
-    v: number
-    signatureType: number
-  }
+  signature: Signature
+}
+
+export type RfqOrder = {
+  makerToken: string
+  takerToken: string
+  makerAmount: string
+  takerAmount: string
+  maker: string
+  taker: string
+  pool: string
+  expiry: string
+  salt: string
+  chainId: number
+  verifyingContract: string
+  txOrigin: string
+}
+
+export type SignedRfqOrder = RfqOrder & {
+  signature: Signature
+}
+
+export type IndicativeQuote = {
+  makerAmount: string
+  takerAmount: string
+  makerToken: string
+  takerToken: string
+  expiry: string
 }
 
 export type UnsignedOrder = {
