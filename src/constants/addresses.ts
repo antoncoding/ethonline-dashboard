@@ -141,33 +141,79 @@ type KnownOperator = {
 export const knownOperators: {
   [key in SupportedNetworks]: KnownOperator[]
 } = {
-  [SupportedNetworks.Mainnet]: [
-    {
-      address: isPublic ? '0x8f7dd610c457fc7cb26b0f9db4e77581f94f70ac' : '0xa05157b27b7db2eb63bb0c11412b71e7de027f89',
-      name: 'PayableProxy',
-      description: 'Proxy contract to help mint calls with ETH instead of WETH',
-      audited: true,
-      author: 'Opyn',
-    },
-  ],
-  [SupportedNetworks.Ropsten]: [
-    {
-      address: isPublic ? '0x0da6280d0837292b7a1f27fc602c7e0bd3ce0b66' : '0x02d048A5f5153Eb48ce0fd4E7f03966C91139636',
-      name: 'PayableProxy',
-      description: 'Proxy contract to help mint calls with ETH instead of WETH',
-      audited: true,
-      author: 'Opyn',
-    },
-  ],
-  [SupportedNetworks.Kovan]: [
-    {
-      address: isPublic ? '0x5957a413f5ac4bcf2ba7c5c461a944b548adb1a5' : '0xe501e882f6e5f049899e02b7e48d89f223cb2a4f',
-      name: 'PayableProxy',
-      description: 'Proxy contract to help mint calls with ETH instead of WETH',
-      audited: true,
-      author: 'Opyn',
-    },
-  ],
+  [SupportedNetworks.Mainnet]: isPublic
+    ? [
+        {
+          address: '0x8f7dd610c457fc7cb26b0f9db4e77581f94f70ac',
+          name: 'PayableProxy',
+          description: 'Proxy contract to help mint calls with ETH instead of WETH',
+          audited: true,
+          author: 'Opyn',
+        },
+      ]
+    : [
+        // internal mainnet operators
+        {
+          address: '0xa05157b27b7db2eb63bb0c11412b71e7de027f89',
+          name: 'PayableProxy',
+          description: 'Proxy contract to help mint calls with ETH instead of WETH',
+          audited: true,
+          author: 'Opyn',
+        },
+      ],
+  [SupportedNetworks.Ropsten]: isPublic
+    ? [
+        {
+          address: '0x0da6280d0837292b7a1f27fc602c7e0bd3ce0b66',
+          name: 'PayableProxy',
+          description: 'Proxy contract to help mint calls with ETH instead of WETH',
+          audited: true,
+          author: 'Opyn',
+        },
+        {
+          address: '0x6B15E012A171394b4022dA6a79728E768F75971a',
+          name: 'AutoSettler',
+          description: 'Auto settler that help you get back collateral from vault after expiry.',
+          audited: false,
+          author: '@antonttc',
+        },
+      ]
+    : [
+        // internal ropsten operators
+        {
+          address: '0x02d048A5f5153Eb48ce0fd4E7f03966C91139636',
+          name: 'PayableProxy',
+          description: 'Proxy contract to help mint calls with ETH instead of WETH',
+          audited: true,
+          author: 'Opyn',
+        },
+      ],
+  [SupportedNetworks.Kovan]: isPublic
+    ? [
+        {
+          address: '0x5957a413f5ac4bcf2ba7c5c461a944b548adb1a5',
+          name: 'PayableProxy',
+          description: 'Proxy contract to help mint calls with ETH instead of WETH',
+          audited: true,
+          author: 'Opyn',
+        },
+        {
+          address: '0xE3DFeFee5b295e57bAb033Fd66B8EdF016Fe85Ec',
+          name: 'AutoSettler',
+          description: 'Auto settler that help you get back collateral from vault after expiry.',
+          audited: false,
+          author: '@antonttc',
+        },
+      ]
+    : [
+        {
+          address: '0xe501e882f6e5f049899e02b7e48d89f223cb2a4f',
+          name: 'PayableProxy',
+          description: 'Proxy contract to help mint calls with ETH instead of WETH',
+          audited: true,
+          author: 'Opyn',
+        },
+      ],
 }
 
 export const getPrimaryPaymentToken = (networkId: SupportedNetworks) => {

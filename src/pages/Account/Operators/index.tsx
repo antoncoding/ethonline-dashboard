@@ -124,7 +124,7 @@ export default function OperatorSection() {
 }
 
 function getOperatorDetail(address: string, networkId: SupportedNetworks, isEOA: boolean) {
-  let tagText = 'un-audited'
+  let tagText = 'beta'
   let tagColor = '#FFC300'
   let tagBackground = '#FFF8BC'
   let label = 'Unknown'
